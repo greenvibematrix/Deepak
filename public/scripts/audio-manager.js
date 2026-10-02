@@ -215,44 +215,11 @@ class MusicReactiveEngine {
   }
 
   /**
-   * Starts an ambient acoustic synthesizer fallback if MP3 file is pending
+   * Safe graceful fallback if MP3 file is pending (silent, no annoying buzzing tones)
    */
   startSyntheticFallback() {
-    if (this.isSyntheticFallback || !this.audioCtx) return;
-    try {
-      this.isSyntheticFallback = true;
-      const now = this.audioCtx.currentTime;
-
-      // Soft root chord (D3 / A3 / F#4 - warm cinematic peaceful key)
-      const osc1 = this.audioCtx.createOscillator();
-      const osc2 = this.audioCtx.createOscillator();
-      const synthGain = this.audioCtx.createGain();
-
-      osc1.type = "sine";
-      osc1.frequency.setValueAtTime(146.83, now); // D3
-
-      osc2.type = "sine";
-      osc2.frequency.setValueAtTime(220.00, now); // A3
-
-      synthGain.gain.setValueAtTime(0.0001, now);
-      synthGain.gain.exponentialRampToValueAtTime(0.12, now + 3);
-
-      osc1.connect(synthGain);
-      osc2.connect(synthGain);
-
-      if (this.gainNode) {
-        synthGain.connect(this.gainNode);
-      } else {
-        synthGain.connect(this.audioCtx.destination);
-      }
-
-      osc1.start();
-      osc2.start();
-
-      this.synthOsc1 = osc1;
-      this.synthOsc2 = osc2;
-      this.synthGain = synthGain;
-    } catch (_) {}
+    // Keep perfectly silent — no robotic/harsh oscillator beeps
+    this.isSyntheticFallback = true;
   }
 }
 
@@ -271,10 +238,15 @@ class BirthdayAudioManager {
     // Track candidates (tried in order)
     this.trackCandidates = [
       window.APP_CONFIG?.AUDIO?.TRACK_SRC || "assets/audio/pavizha-mazha.mp3",
-      "assets/music/pavizha-mazha.mp3",
+      "assets/audio/pavizha-mazha.m4a",
+      "assets/audio/pavizha-mazha.wav",
+      "assets/audio/song.mp3",
+      "assets/audio/music.mp3",
       "assets/audio/bgm.mp3",
-      "assets/music/bgm.mp3",
-      "pavizha-mazha.mp3"
+      "assets/audio/audio.mp3",
+      "assets/music/pavizha-mazha.mp3",
+      "pavizha-mazha.mp3",
+      "song.mp3"
     ];
     this.candidateIndex = 0;
 

@@ -265,24 +265,42 @@ ${submissionTime} (IST)
       }
     }
 
-    // 3. Dispatch Option B: Gmail SMTP / Nodemailer (if GMAIL/SMTP credentials provided)
-    const smtpUser = (process.env.GMAIL_USER || process.env.SMTP_USER || "").trim();
-    const smtpPass = (process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || "").replace(/\s+/g, "");
+    // 3. Dispatch Option B: Gmail SMTP / Nodemailer
+    // Robust detection: supports standard GMAIL_USER / GMAIL_APP_PASSWORD,
+    // as well as if the key was set directly as "greenvibematrix@gmail.com",
+    // and strips all spaces, hyphens, and underscores automatically.
+    let smtpUser = (process.env.GMAIL_USER || process.env.SMTP_USER || "").trim();
+    let smtpPass = (process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS || "").replace(/[\s_-]+/g, "");
+
+    // Fallback: If entered with the email address as the variable name in Vercel
+    if (!smtpUser && process.env["greenvibematrix@gmail.com"]) {
+      smtpUser = "greenvibematrix@gmail.com";
+      smtpPass = (process.env["greenvibematrix@gmail.com"] || "").replace(/[\s_-]+/g, "");
+    }
+
+    // Secondary fallback: scan all environment variables for any Gmail address or key
+    if (!smtpUser || !smtpPass) {
+      for (const [k, v] of Object.entries(process.env)) {
+        if (k.toLowerCase().includes("greenvibematrix") || (k.includes("@") && k.toLowerCase().includes("gmail"))) {
+          smtpUser = k.trim();
+          smtpPass = (v || "").replace(/[\s_-]+/g, "");
+          break;
+        }
+      }
+    }
+
+    if (!smtpUser) smtpUser = "greenvibematrix@gmail.com";
 
     if (smtpUser && smtpPass) {
       try {
         const nodemailer = require("nodemailer");
-        const transporter = process.env.SMTP_HOST
-          ? nodemailer.createTransport({
-              host: process.env.SMTP_HOST,
-              port: parseInt(process.env.SMTP_PORT || "587", 10),
-              secure: process.env.SMTP_SECURE === "true",
-              auth: { user: smtpUser, pass: smtpPass }
-            })
-          : nodemailer.createTransport({
-              service: process.env.SMTP_SERVICE || "gmail",
-              auth: { user: smtpUser, pass: smtpPass }
-            });
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: smtpUser,
+            pass: smtpPass
+          }
+        });
 
         await transporter.sendMail({
           from: `"Sayandana's Birthday Wishes" <${smtpUser}>`,
@@ -297,10 +315,15 @@ ${submissionTime} (IST)
           success: true,
           provider: "smtp",
           recipient: recipientEmail,
-          message: "Wishes delivered successfully to the stars!"
+          message: "Wishes delivered successfully to your inbox!"
         });
       } catch (smtpErr) {
         console.error("[SMTP ERROR]", smtpErr.message);
+        return res.status(500).json({
+          success: false,
+          error: `Email delivery failed: ${smtpErr.message}`,
+          provider: "smtp_error"
+        });
       }
     }
 
