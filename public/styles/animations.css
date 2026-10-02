@@ -1,0 +1,371 @@
+/* ==========================================================================
+   Micro-Animations, Keyframes & Living Illustrations
+   ========================================================================== */
+
+/* ----------------------------------------------------
+   SAYANDANA ANIMATED PORTRAIT EFFECTS
+   ---------------------------------------------------- */
+
+/* Floating & Gentle Breathing for Portrait */
+@keyframes portraitFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+.sayandana-portrait-wrapper {
+  animation: portraitFloat 4.5s ease-in-out infinite;
+  position: relative;
+}
+
+/* Conic Rotating Kasavu Gold Shimmer Border */
+@keyframes kasavuBorderSpin {
+  0% {
+    --border-angle: 0deg;
+  }
+  100% {
+    --border-angle: 360deg;
+  }
+}
+
+.animated-kasavu-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg, 
+    #d4af37, 
+    #fff7d6 25%, 
+    #f5c767 50%, 
+    #d0c3fc 75%, 
+    #d4af37 100%
+  );
+  z-index: 1;
+  animation: spinHalo 8s linear infinite;
+  box-shadow: 0 0 24px rgba(245, 199, 103, 0.45);
+}
+
+@keyframes spinHalo {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Floating Jasmine Petals Orbiting Portrait */
+.orbiting-jasmine {
+  position: absolute;
+  font-size: 1.1rem;
+  pointer-events: none;
+  z-index: 10;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+.orbiting-jasmine.pos-1 {
+  top: -10px;
+  right: 12px;
+  animation: orbitPetal1 6s ease-in-out infinite;
+}
+
+.orbiting-jasmine.pos-2 {
+  bottom: 8px;
+  left: -8px;
+  animation: orbitPetal2 7s ease-in-out infinite;
+}
+
+.orbiting-jasmine.pos-3 {
+  top: 45%;
+  right: -14px;
+  animation: orbitPetal3 5.5s ease-in-out infinite;
+}
+
+@keyframes orbitPetal1 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(6px, -8px) rotate(20deg) scale(1.15);
+  }
+}
+
+@keyframes orbitPetal2 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-6px, 8px) rotate(-25deg) scale(1.1);
+  }
+}
+
+@keyframes orbitPetal3 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(8px, 6px) rotate(15deg) scale(1.2);
+  }
+}
+
+/* Animated Crown Doodle above her head */
+.animated-doodle-crown {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+  z-index: 15;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+  animation: crownBob 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes crownBob {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-6px) rotate(3deg) scale(1.1);
+  }
+}
+
+/* Floating Heart Doodle */
+.animated-doodle-heart {
+  position: absolute;
+  top: 15px;
+  right: -18px;
+  font-size: 1.3rem;
+  color: #ff6b8b;
+  z-index: 15;
+  filter: drop-shadow(0 0 8px rgba(255, 107, 139, 0.7));
+  animation: heartPulse 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes heartPulse {
+  0%, 100% {
+    transform: scale(1) rotate(6deg);
+  }
+  15% {
+    transform: scale(1.25) rotate(10deg);
+  }
+  30% {
+    transform: scale(1) rotate(6deg);
+  }
+  45% {
+    transform: scale(1.15) rotate(8deg);
+  }
+}
+
+/* Animated Sparkles Doodle */
+.animated-doodle-sparkle {
+  position: absolute;
+  font-size: 1.2rem;
+  color: #ffeaa7;
+  z-index: 15;
+  filter: drop-shadow(0 0 10px rgba(255, 234, 167, 0.8));
+  pointer-events: none;
+}
+
+.animated-doodle-sparkle.left {
+  top: 40%;
+  left: -20px;
+  animation: sparkleGlint 2.8s infinite ease-in-out;
+}
+
+.animated-doodle-sparkle.right {
+  bottom: 25px;
+  right: -10px;
+  animation: sparkleGlint 3.2s 0.7s infinite ease-in-out;
+}
+
+@keyframes sparkleGlint {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3) rotate(90deg);
+  }
+}
+
+/* ----------------------------------------------------
+   MAGICAL GIRL GUARDIAN LIVING ANIMATIONS
+   ---------------------------------------------------- */
+@keyframes floatGuardian {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-1.5deg);
+  }
+}
+
+.magical-girl-container {
+  animation: floatGuardian 4s ease-in-out infinite;
+}
+
+/* Guardian Magic Pulse Rings */
+.guardian-aura-ring {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(245, 208, 112, 0.4);
+  animation: spinAura 18s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spinAura {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ----------------------------------------------------
+   CANDLE FLAME & SMOKE
+   ---------------------------------------------------- */
+@keyframes flameFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-1deg);
+    filter: drop-shadow(0 0 10px rgba(255, 186, 66, 0.8));
+  }
+  25% {
+    transform: scale(1.08, 0.95) rotate(2.5deg);
+    filter: drop-shadow(0 0 18px rgba(255, 120, 36, 0.95));
+  }
+  50% {
+    transform: scale(0.96, 1.05) rotate(-2deg);
+    filter: drop-shadow(0 0 12px rgba(255, 200, 80, 0.85));
+  }
+  75% {
+    transform: scale(1.05, 0.97) rotate(1.5deg);
+    filter: drop-shadow(0 0 16px rgba(255, 140, 50, 0.9));
+  }
+}
+
+@keyframes smokeRise {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0.9;
+  }
+  40% {
+    transform: translateY(-28px) scale(1.3) rotate(18deg);
+    opacity: 0.7;
+  }
+  80% {
+    transform: translateY(-55px) scale(2.0) rotate(-15deg);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-80px) scale(2.5) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+/* ----------------------------------------------------
+   INTERACTIVE BUTTON BREATHING PULSE
+   ---------------------------------------------------- */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 4px 18px rgba(245, 199, 103, 0.35);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(245, 199, 103, 0.7), 0 0 16px rgba(255, 234, 167, 0.5);
+  }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
+/* ----------------------------------------------------
+   SUBMISSION SPINNER
+   ---------------------------------------------------- */
+.spinner-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(26, 16, 2, 0.3);
+  border-top-color: #1a1002;
+  border-radius: 50%;
+  animation: spinRound 0.7s linear infinite;
+  margin-right: 6px;
+}
+
+@keyframes spinRound {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ----------------------------------------------------
+   SCENE TRANSITIONS
+   ---------------------------------------------------- */
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.story-scene.active .glass-card {
+  animation: cardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ----------------------------------------------------
+   STORYBOOK SCENE 13 & 15 ARTWORKS
+   ---------------------------------------------------- */
+.saree-cloud-artwork-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  height: 240px;
+  margin: 12px auto 18px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+.saree-cloud-artwork-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.6s ease;
+}
+
+.saree-cloud-artwork-wrapper:hover img {
+  transform: scale(1.05);
+}
+
+/* Sunlit Tree Anime Artwork in Final Scene */
+.tree-anime-artwork-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 220px;
+  margin: 14px auto 18px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(245, 208, 112, 0.4);
+}
+
+.tree-anime-artwork-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  transition: transform 0.6s ease;
+}
+
+.tree-anime-artwork-wrapper:hover img {
+  transform: scale(1.04);
+}

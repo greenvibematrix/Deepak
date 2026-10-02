@@ -1,0 +1,31 @@
+{
+  "name": "sayandana-magical-birthday",
+  "version": "1.0.0",
+  "description": "Three Wishes — A Little Birthday Magic for Sayandana",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test:backend": "node scripts/test-backend.js",
+    "view:wishes": "node scripts/view-wishes.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "nodemailer": "^10.0.13"
+  },
+  "keywords": [
+    "birthday",
+    "interactive",
+    "magical-girl",
+    "kerala-aesthetic",
+    "three-wishes"
+  ],
+  "author": "Deepak",
+  "license": "ISC",
+  "devDependencies": {
+    "localtunnel": "^2.0.2"
+  }
+}

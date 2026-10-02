@@ -1,0 +1,160 @@
+/* ==========================================================================
+   Kerala-Inspired Aesthetic Motifs & Decorative Accents
+   ========================================================================== */
+
+/* Kasavu-Inspired Gold Thread Border */
+.kasavu-frame {
+  position: relative;
+  border: 2px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 
+    0 0 0 1px rgba(255, 253, 248, 0.15),
+    inset 0 0 0 1px rgba(212, 175, 55, 0.35),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Kasavu Double Gold Corner Accents */
+.kasavu-frame::before,
+.kasavu-frame::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--gold-kasavu);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.kasavu-frame::before {
+  top: 6px;
+  left: 6px;
+  border-top: 2px solid var(--gold-kasavu);
+  border-left: 2px solid var(--gold-kasavu);
+}
+
+.kasavu-frame::after {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 2px solid var(--gold-kasavu);
+  border-right: 2px solid var(--gold-kasavu);
+}
+
+/* Sayandana Portrait Frame */
+.sayandana-portrait-wrapper {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  padding: 5px;
+  background: linear-gradient(135deg, var(--gold-warm) 0%, var(--lavender-soft) 50%, var(--gold-kasavu) 100%);
+  box-shadow: 0 0 28px rgba(245, 199, 103, 0.35);
+}
+
+.sayandana-portrait-wrapper img {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 38%;
+  display: block;
+  border: 4px solid #140d2b;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Floating Jasmine Petal Badges */
+.jasmine-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: var(--lavender-soft);
+  background: rgba(208, 195, 252, 0.12);
+  border: 1px solid rgba(208, 195, 252, 0.25);
+  border-radius: var(--radius-full);
+  padding: 4px 14px;
+  margin-bottom: 14px;
+}
+
+.jasmine-accent .flower {
+  font-size: 1rem;
+}
+
+/* Kerala Lamp (Nilavilakku) Presentation */
+.kerala-lamp-container {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  margin: 10px auto 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kerala-lamp-img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(245, 208, 112, 0.3);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+}
+
+.kerala-lamp-container:hover .kerala-lamp-img {
+  transform: scale(1.03);
+  box-shadow: 0 12px 36px var(--shadow-gold-lg);
+}
+
+.kerala-lamp-container.lamp-awakened .kerala-lamp-img {
+  animation: lampAuraPulse 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes lampAuraPulse {
+  0% {
+    box-shadow: 0 0 20px rgba(245, 208, 112, 0.4);
+    border-color: rgba(245, 208, 112, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 45px rgba(245, 208, 112, 0.85);
+    border-color: rgba(255, 240, 180, 0.9);
+  }
+}
+
+/* Magical Girl Floating Avatar */
+.magical-girl-container {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  padding: 4px;
+  background: radial-gradient(circle, rgba(208, 195, 252, 0.5) 0%, rgba(245, 208, 112, 0.3) 70%, transparent 100%);
+  animation: floatGuardian 4s ease-in-out infinite;
+}
+
+.magical-girl-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 38%;
+  border: 2px solid var(--gold-kasavu);
+  box-shadow: 0 4px 20px rgba(208, 195, 252, 0.3);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.magical-girl-avatar.sparkling {
+  filter: brightness(1.25) drop-shadow(0 0 16px var(--gold-warm));
+  transform: scale(1.06);
+}
+
+@keyframes floatGuardian {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}

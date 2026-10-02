@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  
+  <title>Happy Birthday, Sayandana 🎂 — Three Wishes</title>
+  <meta name="description" content="A magical, interactive Kerala-inspired birthday story created specifically for Sayandana. Three wishes under a starlit night sky.">
+  <meta name="theme-color" content="#070919">
+
+  <!-- Google Fonts: Cinzel (cinematic storybook serif) and Outfit (clean modern sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/kerala-decor.css">
+  <link rel="stylesheet" href="styles/scenes.css">
+  <link rel="stylesheet" href="styles/animations.css">
+</head>
+<body>
+
+  <!-- Sky Canvas for Stars, Fireflies & Constellations -->
+  <canvas id="sky-canvas" aria-hidden="true"></canvas>
+
+  <!-- Confetti Canvas for Birthday Reveal -->
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <!-- Flower Pop Animation Overlay -->
+  <div id="flower-pop-overlay" class="flower-pop-fullscreen" aria-hidden="true"></div>
+
+  <!-- Main Interactive Story Viewport -->
+  <main class="story-viewport" id="story-main">
+    <div class="scene-container">
+
+      <!-- ====================================================
+           SCENE 1: OPENING SCREEN
+           ==================================================== -->
+      <section class="story-scene active" id="scene-1" aria-label="Prologue">
+        <div class="glass-card kasavu-frame" id="opening-card-content">
+          <div class="jasmine-accent">
+            <span class="flower">🌸</span>
+            <span>A little birthday moment</span>
+          </div>
+
+          <p class="opening-text-line" id="opening-line-1">
+            Some birthdays deserve more than just a message...
+          </p>
+
+          <p class="opening-text-line highlight" id="opening-line-2">
+            So... I made a little something.
+          </p>
+
+          <button type="button" class="magic-btn" id="btn-enter-magic">
+            Enter the magic ✨
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 2: BIRTHDAY REVEAL (LIVING ANIMATED PORTRAIT)
+           ==================================================== -->
+      <section class="story-scene" id="scene-2" aria-label="Birthday Reveal">
+        <div class="glass-card kasavu-frame">
+          <!-- Living Animated Portrait with Doodles & Jasmine Petals -->
+          <div class="sayandana-portrait-wrapper" id="sayandana-animated-avatar" role="button" tabindex="0" title="Tap Sayandana's picture for birthday sparkles!">
+            <div class="animated-kasavu-ring"></div>
+            <div class="animated-doodle-crown">👑</div>
+            <div class="animated-doodle-heart">🤍</div>
+            <div class="animated-doodle-sparkle left">✨</div>
+            <div class="animated-doodle-sparkle right">✦</div>
+            <div class="orbiting-jasmine pos-1">🌸</div>
+            <div class="orbiting-jasmine pos-2">🌸</div>
+            <div class="orbiting-jasmine pos-3">🌸</div>
+            <img src="assets/images/sayandana-tree-full.jpg" onerror="this.src='assets/images/sayandana-cartoon.png'" alt="Sayandana under enchanted tree" id="sayandana-avatar-img">
+          </div>
+
+          <h1 class="scene-title">Happy Birthday, Sayandana 🎂</h1>
+
+          <p class="story-subtext">
+            Today is your day.<br>
+            So I brought you something a little different.
+          </p>
+
+          <button type="button" class="magic-btn" id="btn-reveal-begin">
+            Let's begin ✨
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 3: ENCHANTED FAIRY TALE GROVE
+           ==================================================== -->
+      <section class="story-scene" id="scene-3" aria-label="Enchanted Fairy Tale Grove">
+        <div class="glass-card kasavu-frame" id="fairy-grove-card">
+          <div class="jasmine-accent">
+            <span class="flower">🌸</span>
+            <span>The Enchanted Fairy Grove</span>
+          </div>
+
+          <div class="magical-girl-container">
+            <div class="guardian-aura-ring"></div>
+            <img src="assets/images/sayandana-tree-full.jpg" alt="Sayandana" class="magical-girl-avatar">
+          </div>
+
+          <div class="guardian-speech-bubble" id="garden-dialogue-text">
+            Every birthday comes with wishes...<br>
+            And tonight, fairy magic blooms for you.
+          </div>
+
+          <!-- Interactive Fairy Tale Blooming Flower / Crystal Blossom -->
+          <div class="fairy-flower-interactive-wrapper" id="interactive-fairy-flower" role="button" tabindex="0" title="Tap the enchanted flower to awaken the magic!">
+            <div class="fairy-flower-aura"></div>
+            <div class="fairy-blossom-assembly" id="fairy-blossom">
+              <div class="petal petal-1"></div>
+              <div class="petal petal-2"></div>
+              <div class="petal petal-3"></div>
+              <div class="petal petal-4"></div>
+              <div class="petal petal-5"></div>
+              <div class="petal petal-6"></div>
+              <div class="crystal-core">
+                <span class="core-sparkle">✨</span>
+              </div>
+            </div>
+            <p class="tap-flower-hint">Tap the blooming flower ✨</p>
+          </div>
+
+          <button type="button" class="magic-btn" id="btn-wake-lamp">
+            Wake the magic ✨
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 4: MAGICAL GIRL / GENIE SCENE
+           ==================================================== -->
+      <section class="story-scene" id="scene-4" aria-label="The Three Wishes Introduction">
+        <div class="glass-card kasavu-frame">
+          <div class="magical-girl-container">
+            <div class="guardian-aura-ring"></div>
+            <img src="assets/images/sayandana-tree-full.jpg" alt="Sayandana" class="magical-girl-avatar">
+          </div>
+
+          <h2 class="scene-title">Three Sacred Wishes</h2>
+
+          <div class="guardian-speech-bubble" id="genie-dialogue-text">
+            You have three wishes.<br><br>
+            But these aren't wishes for me to grant...<br><br>
+            They're yours to write.
+          </div>
+
+          <div class="progress-bar-wishes" aria-label="Wish Progress">
+            <div class="progress-pill" id="prog-wish-1">Wish 1</div>
+            <div class="progress-pill" id="prog-wish-2">Wish 2</div>
+            <div class="progress-pill" id="prog-wish-3">Wish 3</div>
+          </div>
+
+          <button type="button" class="magic-btn" id="btn-start-wishes">
+            Write Wish 1 🌙
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 5: WISH BOX ONE
+           ==================================================== -->
+      <section class="story-scene" id="scene-5" aria-label="First Wish">
+        <div class="glass-card kasavu-frame">
+          <div class="progress-bar-wishes">
+            <div class="progress-pill completed">Wish 1 ✦</div>
+            <div class="progress-pill">Wish 2</div>
+            <div class="progress-pill">Wish 3</div>
+          </div>
+
+          <h2 class="scene-title">Wish One 🌙</h2>
+
+          <p class="story-subtext">
+            What is one thing you want to happen in your life this year?
+          </p>
+
+          <div class="wish-prompt-suggestions">
+            <span class="suggestion-chip">A dream?</span>
+            <span class="suggestion-chip">A place?</span>
+            <span class="suggestion-chip">An achievement?</span>
+            <span class="suggestion-chip">Something you've been waiting for?</span>
+          </div>
+
+          <div class="wish-textarea-wrapper">
+            <textarea 
+              class="wish-textarea" 
+              id="wish1-input" 
+              placeholder="Write your wish here..." 
+              rows="4" 
+              maxlength="1500" 
+              aria-label="Wish 1 text"
+            ></textarea>
+            <div class="validation-hint" id="wish1-validation-msg"></div>
+          </div>
+
+          <button type="button" class="magic-btn" id="btn-submit-wish1" disabled>
+            Cast Wish 1 ✨
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 6: WISH BOX TWO
+           ==================================================== -->
+      <section class="story-scene" id="scene-6" aria-label="Second Wish">
+        <div class="glass-card kasavu-frame">
+          <div class="progress-bar-wishes">
+            <div class="progress-pill completed">Wish 1 ✦</div>
+            <div class="progress-pill completed">Wish 2 ✦</div>
+            <div class="progress-pill">Wish 3</div>
+          </div>
+
+          <h2 class="scene-title">Wish Two ✨</h2>
+
+          <p class="story-subtext">
+            If you could make one beautiful thing happen this year, what would it be?
+          </p>
+
+          <div class="wish-prompt-suggestions">
+            <span class="suggestion-chip">For yourself?</span>
+            <span class="suggestion-chip">Someone dear?</span>
+            <span class="suggestion-chip">A small everyday joy?</span>
+          </div>
+
+          <div class="wish-textarea-wrapper">
+            <textarea 
+              class="wish-textarea" 
+              id="wish2-input" 
+              placeholder="Your second wish..." 
+              rows="4" 
+              maxlength="1500" 
+              aria-label="Wish 2 text"
+            ></textarea>
+            <div class="validation-hint" id="wish2-validation-msg"></div>
+          </div>
+
+          <button type="button" class="magic-btn" id="btn-submit-wish2" disabled>
+            Cast Wish 2 ✨
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 7: WISH BOX THREE
+           ==================================================== -->
+      <section class="story-scene" id="scene-7" aria-label="Third Wish">
+        <div class="glass-card kasavu-frame">
+          <div class="progress-bar-wishes">
+            <div class="progress-pill completed">Wish 1 ✦</div>
+            <div class="progress-pill completed">Wish 2 ✦</div>
+            <div class="progress-pill completed">Wish 3 ✦</div>
+          </div>
+
+          <h2 class="scene-title">Wish Three 👀</h2>
+
+          <p class="story-subtext">
+            Is there something you secretly wish someone would understand about you?
+          </p>
+
+          <div class="wish-prompt-suggestions">
+            <span class="suggestion-chip">A feeling?</span>
+            <span class="suggestion-chip">An unspoken thought?</span>
+            <span class="suggestion-chip">A quiet hope?</span>
+          </div>
+
+          <div class="wish-textarea-wrapper">
+            <textarea 
+              class="wish-textarea" 
+              id="wish3-input" 
+              placeholder="Something you've never said..." 
+              rows="4" 
+              maxlength="1500" 
+              aria-label="Wish 3 text"
+            ></textarea>
+            <div class="validation-hint" id="wish3-validation-msg"></div>
+          </div>
+
+          <button type="button" class="magic-btn" id="btn-submit-wish3">
+            Cast Wish 3 ✨
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 9 & 10: BIRTHDAY CAKE & CANDLE
+           ==================================================== -->
+      <section class="story-scene" id="scene-9" aria-label="Birthday Cake & Candle">
+        <div class="glass-card kasavu-frame">
+          <h2 class="scene-title">Before the final wish...</h2>
+          
+          <p class="story-subtext">
+            There's one more thing.<br>
+            Make a wish and blow out the candle 🎂
+          </p>
+
+          <!-- Interactive Cake & Candle Art -->
+          <div class="cake-pedestal-wrapper">
+            <div class="interactive-cake-art">
+              <!-- Candle Assembly -->
+              <div class="candle-assembly" id="birthday-candle" role="button" tabindex="0" aria-label="Birthday candle. Tap to blow out.">
+                <div class="candle-smoke-plume" id="candle-smoke"></div>
+                <div class="candle-flame" id="candle-flame"></div>
+                <div class="candle-wick"></div>
+                <div class="candle-stick"></div>
+              </div>
+
+              <!-- Cake Base -->
+              <div class="cake-tier">
+                <div class="cake-frosting-drip"></div>
+              </div>
+              <div class="cake-pedestal-plate"></div>
+            </div>
+          </div>
+
+          <!-- Method 1: Microphone Blowing Access -->
+          <div style="margin-top: 12px;">
+            <button type="button" class="magic-btn secondary" id="mic-request-btn">
+              Want to blow out the candle? Allow microphone 🎤
+            </button>
+            <div id="mic-status-badge" class="mic-status-badge"></div>
+            <div class="breath-meter-container" id="breath-meter-container">
+              <div class="breath-meter-fill" id="breath-meter-fill"></div>
+            </div>
+          </div>
+
+          <!-- Method 2: Tap the candle fallback -->
+          <p class="tap-candle-hint" id="candle-tap-hint">
+            Or tap the candle ✨
+          </p>
+
+          <div id="cake-status-message" style="margin-top: 15px; min-height: 24px;"></div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 11: FINISH BUTTON & SUBMISSION
+           ==================================================== -->
+      <section class="story-scene" id="scene-11" aria-label="Send Wishes">
+        <div class="glass-card kasavu-frame">
+          <div class="jasmine-accent">
+            <span class="flower">⭐</span>
+            <span>The Three Wishes are Sealed</span>
+          </div>
+
+          <h2 class="scene-title">Ready to send your wishes?</h2>
+
+          <p class="story-subtext">
+            Your three wishes are sealed with starlight. Ready to send them on their way? ✨
+          </p>
+
+          <button type="button" class="magic-btn pulse-glow" id="btn-final-finish">
+            FINISH ✨
+          </button>
+
+          <div id="submission-status-msg" style="margin-top: 14px;"></div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 12: EMAIL SUCCESS SCREEN
+           ==================================================== -->
+      <section class="story-scene" id="scene-12" aria-label="Wishes Sent">
+        <div class="glass-card kasavu-frame">
+          <div class="magical-girl-container">
+            <div class="guardian-aura-ring"></div>
+            <img src="assets/images/sayandana-tree-full.jpg" alt="Sayandana" class="magical-girl-avatar sparkling">
+          </div>
+
+          <h2 class="scene-title">Wish received. 💌</h2>
+
+          <p class="story-subtext">
+            Some wishes are better when they're simply heard.
+          </p>
+
+          <button type="button" class="magic-btn" id="btn-continue-apology">
+            A small note... 🤍
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 13: ONE LAST LITTLE THING… (PERSONAL BIRTHDAY MEMORY)
+           ==================================================== -->
+      <section class="story-scene" id="scene-13" aria-label="One Last Little Thing">
+        <div class="glass-card kasavu-frame">
+          <div class="jasmine-accent">
+            <span class="flower">🌸</span>
+            <span>A Quiet Birthday Thought</span>
+          </div>
+
+          <h2 class="scene-title" style="letter-spacing: 1.5px; font-size: 1.5rem; text-transform: uppercase;">
+            One Last Little Thing…
+          </h2>
+
+          <div class="memory-box-container">
+            <!-- Closed State: Floating Letter Icon -->
+            <div class="memory-icon-wrapper" id="memory-letter-toggle" role="button" tabindex="0" title="Tap to open the letter">
+              <div class="memory-icon-halo"></div>
+              <div class="memory-letter-symbol">💌</div>
+            </div>
+
+            <p class="story-subtext" id="memory-closed-hint" style="margin-bottom: 12px;">
+              A quiet message tucked away under the stars.
+            </p>
+
+            <button type="button" class="magic-btn" id="btn-open-memory-letter">
+              Open the letter ✨
+            </button>
+
+            <!-- Opened State: The Unfolded Memory Card -->
+            <div class="memory-unfolded-card" id="memory-unfolded-content">
+              <p class="memory-paragraph">
+                I know things haven't always gone perfectly between us.
+              </p>
+              <p class="memory-paragraph">
+                I'm genuinely sorry for the things I did wrong.
+              </p>
+              <p class="memory-paragraph">
+                I don't expect anything from you.
+              </p>
+              <p class="memory-paragraph">
+                I just wanted to wish you a genuinely happy birthday.
+              </p>
+              <p class="memory-paragraph" style="color: var(--gold-warm); font-weight: 500;">
+                Whatever this year brings, I hope it brings you happiness, peace, good memories and plenty of reasons to smile.
+              </p>
+
+              <!-- Elegant Polaroid Memory Photo -->
+              <div class="memory-polaroid-wrapper" id="memory-photo-section">
+                <div class="memory-polaroid-card">
+                  <div class="memory-polaroid-img-container">
+                    <img src="assets/images/sayandana-tree-full.jpg" onerror="this.src='assets/images/sayandana-cartoon.png'" alt="A little memory" loading="lazy">
+                  </div>
+                  <div class="polaroid-caption">just a little moment worth remembering</div>
+                </div>
+              </div>
+
+              <div style="text-align: center; margin-top: 24px;">
+                <button type="button" class="magic-btn" id="btn-continue-reveal">
+                  Wondering who made this? ✨
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 14: CREATOR REVEAL & THREE RETURNING STARS
+           ==================================================== -->
+      <section class="story-scene" id="scene-14" aria-label="Creator Reveal">
+        <div class="glass-card kasavu-frame">
+          <div class="jasmine-accent">
+            <span class="flower">✨</span>
+            <span>There’s one more thing…</span>
+          </div>
+
+          <h2 class="scene-title" id="scene-14-title">Wondering who made this?</h2>
+
+          <p class="story-subtext" id="scene-14-subtext">
+            And if you ever wonder who made this little bit of magic...
+          </p>
+
+          <div class="envelope-interactive-wrapper" id="magical-envelope" role="button" tabindex="0" aria-label="Open birthday envelope">
+            <div class="envelope-body">
+              <div class="envelope-wax-seal">
+                <span>🌙</span>
+              </div>
+              <div class="envelope-letter-card">
+                <div class="letter-creator-name">— Deepak 🤍</div>
+                <div class="letter-creator-desc">
+                  Just a little birthday corner made with good wishes.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Three Returning Stars Sequence -->
+          <div class="stars-return-sequence" id="stars-return-container" style="display: none;">
+            <div class="returning-stars-cluster">
+              <div class="returning-star-item" id="ret-star-1">✦</div>
+              <div class="returning-star-item" id="ret-star-2">✦</div>
+              <div class="returning-star-item" id="ret-star-3">✦</div>
+            </div>
+            <p class="stars-memory-phrase" id="stars-memory-text">
+              Three wishes.<br>One little birthday memory.
+            </p>
+          </div>
+
+          <!-- Final Wish Prompt & Transition -->
+          <div id="final-wish-prompt-container" style="display: none; margin-top: 18px;">
+            <p class="story-subtext" style="color: var(--gold-warm); font-weight: 500; margin-bottom: 12px;">
+              Ready for your final birthday wish? ✨
+            </p>
+            <button type="button" class="magic-btn pulse-glow" id="btn-to-final-screen">
+              Final Birthday Wish ✨
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================
+           SCENE 15: FINAL SCREEN (WITH SUNLIT ANIME TREE ART)
+           ==================================================== -->
+      <section class="story-scene" id="scene-15" aria-label="Final Birthday Wish">
+        <div class="glass-card kasavu-frame">
+          <!-- Enchanted Kerala Sunlit Tree Portrait -->
+          <div class="tree-anime-artwork-wrapper">
+            <img src="assets/images/sayandana-tree-full.jpg" alt="Sayandana under enchanted Kerala tree">
+          </div>
+
+          <h2 class="scene-title" style="font-size: 1.8rem;">Happy Birthday, Sayandana 🎂🤍</h2>
+
+          <p class="final-farewell-text">
+            May this year be kinder,<br>
+            brighter,<br>
+            and full of beautiful surprises.<br><br>
+            Take care.<br>
+            And keep making wishes. ✨
+          </p>
+
+          <div class="final-signature" id="final-signature-deepak">— Deepak</div>
+
+          <button type="button" class="magic-btn secondary" id="btn-replay-magic" style="margin-top: 24px;">
+            Replay the magic ↺
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Unobtrusive Floating Music Controller (🎵 / 🔊 / 🔇) -->
+  <button id="music-toggle-btn" class="music-floating-pill" type="button" aria-label="Toggle background music" title="Pavizha Mazha — Athiran">
+    <span class="music-wave-bars">
+      <span class="bar bar-1"></span>
+      <span class="bar bar-2"></span>
+      <span class="bar bar-3"></span>
+    </span>
+    <span class="music-icon-symbol">🎵</span>
+  </button>
+
+  <!-- Scripts -->
+  <script src="scripts/config.js"></script>
+  <script src="scripts/stars-sky.js"></script>
+  <script src="scripts/confetti.js"></script>
+  <script src="scripts/candle-mic.js"></script>
+  <script src="scripts/audio-manager.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
