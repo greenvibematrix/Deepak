@@ -1,0 +1,1076 @@
+/* ==========================================================================
+   SCENE 8: THE WISHES — FLOATING WISH-BALLS, MAGIC LAMP & GENIE
+   Ethereal, mobile-first interactive experience with living moving graphics
+   ========================================================================== */
+
+/* ----------------------------------------------------
+   SCENE 8 CONTAINER & ARENA
+   ---------------------------------------------------- */
+#scene-8 {
+  position: relative;
+  width: 100%;
+}
+
+.wishes-card-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 580px;
+  padding: 24px 16px 28px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: radial-gradient(circle at 50% 30%, rgba(26, 18, 54, 0.85) 0%, rgba(12, 10, 30, 0.92) 70%, rgba(7, 9, 25, 0.98) 100%);
+  border: 1px solid rgba(245, 208, 112, 0.28);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(245, 199, 103, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Background Atmosphere Tint Layer (subtly darkens & glows near the end) */
+.wishes-atmosphere-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(7, 9, 25, 0.5) 100%);
+  transition: background 1.2s ease, opacity 1.2s ease;
+  z-index: 1;
+}
+
+.wishes-atmosphere-tint.deep-magic {
+  background: radial-gradient(circle at 50% 50%, rgba(45, 20, 80, 0.35) 0%, rgba(8, 6, 22, 0.85) 80%, rgba(5, 6, 18, 0.95) 100%);
+}
+
+/* Dedicated Scene Canvas for real-time moving particles & stardust */
+#wishes-particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Header bar inside Scene 8 */
+.wishes-scene-header {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 8px;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.wishes-counter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  background: rgba(245, 199, 103, 0.12);
+  border: 1px solid rgba(245, 208, 112, 0.35);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--gold-warm);
+  margin-top: 6px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: all 0.4s ease;
+}
+
+.wishes-counter-pill .dot-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-warm);
+  box-shadow: 0 0 8px var(--gold-warm);
+  animation: pulseDot 1.6s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.35); opacity: 1; }
+}
+
+/* ----------------------------------------------------
+   INTERACTIVE BALLS ARENA
+   ---------------------------------------------------- */
+.wishes-balls-arena {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  margin: 4px 0;
+  z-index: 5;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+@media (max-height: 700px) {
+  .wishes-balls-arena {
+    height: 380px;
+  }
+}
+
+/* Single Floating Wish-Ball */
+.wish-ball-item {
+  position: absolute;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  will-change: transform, opacity;
+  touch-action: manipulation;
+}
+
+/* Invisible generous hit target so even tiny mobile taps succeed effortlessly */
+.wish-ball-item::before {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+}
+
+/* Glowing Sphere Body with 3D Glassmorphism lighting */
+.wish-ball-sphere {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.3s ease;
+}
+
+.wish-ball-item:active .wish-ball-sphere,
+.wish-ball-item:hover .wish-ball-sphere {
+  transform: scale(1.12);
+}
+
+/* Gloss Specular Highlight */
+.wish-ball-gloss {
+  position: absolute;
+  top: 12%;
+  left: 20%;
+  width: 38%;
+  height: 26%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.1) 80%);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+/* Inner Pulsing Core / Twinkling Star */
+.wish-ball-inner-sparkle {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 0 8px #ffffff;
+  pointer-events: none;
+  animation: ballSparkleTwinkle 2.5s ease-in-out infinite;
+}
+
+@keyframes ballSparkleTwinkle {
+  0%, 100% { opacity: 0.5; transform: scale(0.85) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(45deg); }
+}
+
+/* Subtle hanging stardust thread (very faint, dreamy balloon aesthetic) */
+.wish-ball-thread {
+  position: absolute;
+  top: 96%;
+  left: 50%;
+  width: 1px;
+  height: 22px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(245, 199, 103, 0.45) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Ball Color Variants */
+.wish-ball-item.theme-gold .wish-ball-sphere {
+  background: radial-gradient(circle at 35% 30%, #fff7d6 0%, #f5c767 45%, #c59728 80%, #75550a 100%);
+  box-shadow: 0 0 20px rgba(245, 199, 103, 0.55), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.wish-ball-item.theme-lavender .wish-ball-sphere {
+  background: radial-gradient(circle at 35% 30%, #f8f5ff 0%, #d0c3fc 45%, #9b82ea 80%, #51369b 100%);
+  box-shadow: 0 0 20px rgba(208, 195, 252, 0.55), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.wish-ball-item.theme-rose .wish-ball-sphere {
+  background: radial-gradient(circle at 35% 30%, #fff0f4 0%, #fca5b9 45%, #e26d8b 80%, #7e233b 100%);
+  box-shadow: 0 0 20px rgba(252, 165, 185, 0.55), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.wish-ball-item.theme-pearl .wish-ball-sphere {
+  background: radial-gradient(circle at 35% 30%, #ffffff 0%, #e8f0fe 45%, #b4cbe8 80%, #4f6888 100%);
+  box-shadow: 0 0 20px rgba(232, 240, 254, 0.6), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.wish-ball-item.theme-starlight .wish-ball-sphere {
+  background: radial-gradient(circle at 35% 30%, #f0fdff 0%, #a5f3fc 45%, #38bdf8 80%, #0369a1 100%);
+  box-shadow: 0 0 20px rgba(165, 243, 252, 0.55), inset 0 -2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* 3D Depth Layers */
+.wish-ball-item.layer-bg {
+  z-index: 2;
+  opacity: 0.72;
+  filter: blur(0.5px);
+}
+.wish-ball-item.layer-mid {
+  z-index: 5;
+  opacity: 0.92;
+}
+.wish-ball-item.layer-fg {
+  z-index: 8;
+  opacity: 1;
+}
+
+/* Organic Floating Animations */
+@keyframes floatPath1 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(12px, -18px) rotate(4deg); }
+  66% { transform: translate(-8px, -10px) rotate(-3deg); }
+}
+
+@keyframes floatPath2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(-14px, -14px) rotate(-4deg); }
+  66% { transform: translate(10px, -22px) rotate(3deg); }
+}
+
+@keyframes floatPath3 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  40% { transform: translate(16px, -12px) rotate(5deg); }
+  75% { transform: translate(-12px, -20px) rotate(-4deg); }
+}
+
+@keyframes floatPath4 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  35% { transform: translate(-10px, -24px) rotate(-5deg); }
+  70% { transform: translate(14px, -8px) rotate(3deg); }
+}
+
+@keyframes floatPath5 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(8px, -26px) rotate(4deg); }
+}
+
+@keyframes floatPath6 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-12px, -24px) rotate(-4deg); }
+}
+
+/* Ball Pop Animation */
+.wish-ball-item.popping {
+  pointer-events: none;
+  animation: ballBurstEffect 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes ballBurstEffect {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.45);
+    opacity: 0.9;
+    filter: brightness(2) drop-shadow(0 0 25px #ffffff);
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+    filter: brightness(3);
+  }
+}
+
+/* ----------------------------------------------------
+   REVEALED WISH CARD (FLOATING BANNER)
+   ---------------------------------------------------- */
+.revealed-wish-card-banner {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px) scale(0.95);
+  width: 90%;
+  max-width: 380px;
+  padding: 14px 18px;
+  background: rgba(18, 14, 38, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(245, 208, 112, 0.45);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55), 0 0 20px rgba(245, 199, 103, 0.25);
+  text-align: center;
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.revealed-wish-card-banner.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.revealed-wish-tag {
+  font-size: 0.72rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gold-kasavu);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.revealed-wish-quote {
+  font-family: var(--font-story);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--cream-pure);
+  font-style: italic;
+  font-weight: 500;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ----------------------------------------------------
+   MYSTERY PAUSE PHASE ("That's all the wishes...")
+   ---------------------------------------------------- */
+.mystery-pause-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease;
+}
+
+.mystery-pause-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mystery-phrase-text {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+  color: var(--gold-warm);
+  letter-spacing: 1px;
+  line-height: 1.5;
+  text-shadow: 0 0 24px rgba(245, 199, 103, 0.45);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 1s ease, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mystery-phrase-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ----------------------------------------------------
+   MAGIC LAMP CONTAINER & LIVING MOVING GRAPHICS
+   ---------------------------------------------------- */
+.magic-lamp-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.4s ease, transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.92);
+}
+
+.magic-lamp-stage.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* Gathering particles effect container */
+.lamp-gathering-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Living Lamp Graphic Wrapper */
+.lamp-artwork-assembly {
+  position: relative;
+  width: 260px;
+  height: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none; /* Allows smooth touch dragging without page scroll */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lamp-artwork-assembly:active {
+  cursor: grabbing;
+}
+
+/* Radiant Golden Halo around the Lamp */
+.lamp-aura-halo {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 199, 103, 0.35) 0%, rgba(208, 195, 252, 0.2) 45%, transparent 75%);
+  animation: lampAuraBreath 3.2s ease-in-out infinite;
+  pointer-events: none;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+@keyframes lampAuraBreath {
+  0%, 100% { transform: scale(0.92); opacity: 0.65; }
+  50% { transform: scale(1.18); opacity: 1; filter: drop-shadow(0 0 25px rgba(245, 199, 103, 0.6)); }
+}
+
+/* The Lamp Visual Graphic with Kasavu gold glow & jasmine base */
+.lamp-visual-frame {
+  position: relative;
+  width: 220px;
+  height: 190px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 25px rgba(245, 199, 103, 0.35);
+  border: 1px solid rgba(245, 208, 112, 0.4);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.lamp-visual-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Moving Light Sweep across the Brass Lamp */
+.lamp-brass-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.45) 45%, rgba(245, 199, 103, 0.5) 55%, transparent 80%);
+  background-size: 200% 200%;
+  animation: brassLightSweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@keyframes brassLightSweep {
+  0% { background-position: -120% -120%; }
+  50%, 100% { background-position: 220% 220%; }
+}
+
+/* Moving Stardust Wisps floating from Lamp Spout */
+.lamp-spout-wisps {
+  position: absolute;
+  top: 18px;
+  left: 36px;
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.spout-spark-particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff7d6;
+  box-shadow: 0 0 8px #f5c767;
+  animation: spoutParticleRise 2.4s ease-out infinite;
+}
+
+.spout-spark-particle.p1 { left: 4px; animation-delay: 0s; }
+.spout-spark-particle.p2 { left: 14px; animation-delay: 0.8s; }
+.spout-spark-particle.p3 { left: 8px; animation-delay: 1.6s; }
+
+@keyframes spoutParticleRise {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  30% { opacity: 1; transform: translate(-8px, -16px) scale(1.2); }
+  100% { transform: translate(-22px, -45px) scale(0.2); opacity: 0; }
+}
+
+/* Lamp Shake / Rumble on Rubbing */
+.lamp-artwork-assembly.rubbing {
+  animation: lampRumble 0.15s ease-in-out infinite alternate;
+}
+
+@keyframes lampRumble {
+  0% { transform: rotate(-2deg) scale(1.02); }
+  100% { transform: rotate(2deg) scale(1.04); }
+}
+
+/* Rubbing Progress Bar */
+.lamp-rub-progress-wrap {
+  width: 190px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+  margin-top: 14px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.lamp-rub-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #f5c767 0%, #ff8a65 50%, #d0c3fc 100%);
+  box-shadow: 0 0 10px #f5c767;
+  transition: width 0.18s ease-out;
+}
+
+/* Instruction Banner below Lamp */
+.lamp-instruction-banner {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.lamp-intro-text {
+  font-family: var(--font-story);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.lamp-rub-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--gold-warm);
+  background: rgba(245, 199, 103, 0.14);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(245, 208, 112, 0.35);
+  animation: rubHintPulse 2s ease-in-out infinite;
+}
+
+@keyframes rubHintPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(245, 199, 103, 0.2); }
+  50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(245, 199, 103, 0.45); }
+}
+
+.swipe-hand-icon {
+  display: inline-block;
+  animation: swipeHand 1.6s ease-in-out infinite;
+}
+
+@keyframes swipeHand {
+  0%, 100% { transform: translateX(-4px); }
+  50% { transform: translateX(6px); }
+}
+
+/* ----------------------------------------------------
+   MOVING GRAPHIC MAGIC SMOKE SYSTEM
+   ---------------------------------------------------- */
+.magic-smoke-cloud-layer {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 260px;
+  pointer-events: none;
+  z-index: 55;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.magic-smoke-cloud-layer.active {
+  opacity: 1;
+}
+
+/* ----------------------------------------------------
+   CARTOON ANIMATED BLUE SMOKE SYSTEM
+   ---------------------------------------------------- */
+.magic-smoke-cloud-layer {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 300px;
+  pointer-events: none;
+  z-index: 55;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.magic-smoke-cloud-layer.active {
+  opacity: 1;
+}
+
+/* Swirling Cartoon Blue Smoke Puffs with Squash & Stretch */
+.smoke-puff-ball {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 40%, #c4f5ff 0%, #00d2ff 35%, #0077b6 70%, rgba(3, 4, 94, 0.4) 85%, transparent 100%);
+  filter: blur(10px);
+  mix-blend-mode: screen;
+  box-shadow: 0 0 35px rgba(0, 210, 255, 0.8), 0 0 60px rgba(0, 119, 182, 0.5);
+  will-change: transform, opacity;
+}
+
+.smoke-puff-1 {
+  width: 150px;
+  height: 150px;
+  bottom: 20px;
+  left: 85px;
+  animation: cartoonBlueSmoke1 3.2s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+.smoke-puff-2 {
+  width: 180px;
+  height: 180px;
+  bottom: 40px;
+  left: 50px;
+  animation: cartoonBlueSmoke2 3.8s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 0.4s;
+}
+
+.smoke-puff-3 {
+  width: 210px;
+  height: 210px;
+  bottom: 70px;
+  left: 55px;
+  animation: cartoonBlueSmoke3 4.2s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 0.9s;
+}
+
+.smoke-puff-4 {
+  width: 160px;
+  height: 160px;
+  bottom: 50px;
+  right: 40px;
+  animation: cartoonBlueSmoke1 3.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite 0.7s;
+}
+
+@keyframes cartoonBlueSmoke1 {
+  0% { transform: scale(0.2, 0.4) translateY(30px) rotate(0deg); opacity: 0; }
+  35% { transform: scale(1.25, 0.9) translateY(-35px) rotate(35deg); opacity: 0.95; }
+  70% { transform: scale(1.05, 1.15) translateY(-75px) rotate(70deg); opacity: 0.8; }
+  100% { transform: scale(1.5, 1.4) translateY(-120px) rotate(110deg); opacity: 0; }
+}
+
+@keyframes cartoonBlueSmoke2 {
+  0% { transform: scale(0.2, 0.4) translateY(30px) rotate(0deg); opacity: 0; }
+  40% { transform: scale(1.3, 0.85) translateY(-45px) rotate(-35deg); opacity: 0.92; }
+  75% { transform: scale(1.1, 1.2) translateY(-90px) rotate(-70deg); opacity: 0.75; }
+  100% { transform: scale(1.6, 1.5) translateY(-140px) rotate(-110deg); opacity: 0; }
+}
+
+@keyframes cartoonBlueSmoke3 {
+  0% { transform: scale(0.25, 0.3) translateY(30px) rotate(0deg); opacity: 0; }
+  45% { transform: scale(1.35, 0.95) translateY(-55px) rotate(25deg); opacity: 0.95; }
+  80% { transform: scale(1.15, 1.25) translateY(-110px) rotate(60deg); opacity: 0.7; }
+  100% { transform: scale(1.7, 1.6) translateY(-165px) rotate(90deg); opacity: 0; }
+}
+
+/* ----------------------------------------------------
+   CHARMING MAGICAL GENIE REVEAL & LIVING GRAPHICS
+   ---------------------------------------------------- */
+.genie-character-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px) scale(0.9);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.genie-character-stage.visible {
+  opacity: 1;
+  pointer-events: auto;
+  animation: cartoonGeniePopOut 1.1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes cartoonGeniePopOut {
+  0% {
+    transform: translateY(120px) scale(0.15, 0.4);
+    opacity: 0;
+    filter: brightness(2.5);
+  }
+  50% {
+    transform: translateY(-25px) scale(1.18, 0.88);
+    opacity: 1;
+    filter: brightness(1.3);
+  }
+  75% {
+    transform: translateY(8px) scale(0.94, 1.06);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+/* Living Floating Genie Character Wrapper */
+.genie-avatar-assembly {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: genieFloatBob 4.2s ease-in-out infinite;
+}
+
+@keyframes genieFloatBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1.5deg); }
+}
+
+/* Conic Rotating Blue & Gold Starlight Halo around Genie */
+.genie-kasavu-halo {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #00d2ff, #fff7d6 20%, #3a7bd5 45%, #f5c767 70%, #00d2ff 100%);
+  animation: genieHaloSpin 8s linear infinite;
+  box-shadow: 0 0 45px rgba(0, 210, 255, 0.8), 0 0 25px rgba(245, 199, 103, 0.5);
+  z-index: 1;
+}
+
+@keyframes genieHaloSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Note Scroll Badge */
+.genie-note-scroll-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #fff7d6;
+  background: rgba(0, 180, 255, 0.22);
+  border: 1px solid rgba(0, 210, 255, 0.6);
+  border-radius: var(--radius-full);
+  padding: 4px 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 0 16px rgba(0, 210, 255, 0.45);
+  animation: noteGlowPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes noteGlowPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 210, 255, 0.35); transform: scale(1); }
+  50% { box-shadow: 0 0 24px rgba(0, 210, 255, 0.75), 0 0 12px #f5c767; transform: scale(1.04); }
+}
+
+/* Genie Portrait Container */
+.genie-artwork-circle {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 5;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.3), 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.genie-artwork-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Orbiting Jasmine Blossoms around Genie */
+.genie-orbiting-jasmine {
+  position: absolute;
+  font-size: 1.15rem;
+  z-index: 12;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+}
+
+.genie-orbiting-jasmine.pos-g1 {
+  top: 10px;
+  left: 10px;
+  animation: genieOrbit1 5.5s ease-in-out infinite;
+}
+
+.genie-orbiting-jasmine.pos-g2 {
+  bottom: 25px;
+  right: 5px;
+  animation: genieOrbit2 6.5s ease-in-out infinite;
+}
+
+.genie-orbiting-jasmine.pos-g3 {
+  top: 40%;
+  right: -15px;
+  animation: genieOrbit3 5s ease-in-out infinite;
+}
+
+@keyframes genieOrbit1 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(8px, -12px) scale(1.2) rotate(25deg); }
+}
+
+@keyframes genieOrbit2 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(-10px, 8px) scale(1.15) rotate(-30deg); }
+}
+
+@keyframes genieOrbit3 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(-6px, -10px) scale(1.2) rotate(20deg); }
+}
+
+/* Swirling Mist at Genie's Waist (blending her into the lamp smoke) */
+.genie-waist-mist {
+  position: absolute;
+  bottom: -15px;
+  width: 250px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(208, 195, 252, 0.65) 0%, rgba(245, 199, 103, 0.45) 50%, transparent 80%);
+  filter: blur(10px);
+  z-index: 6;
+  animation: waistMistPulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes waistMistPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.75; }
+  50% { transform: scale(1.15) rotate(4deg); opacity: 0.95; }
+}
+
+/* ----------------------------------------------------
+   GLOWING MAGICAL WISH ORB (MOVING GRAPHIC FLIGHT)
+   ---------------------------------------------------- */
+.magical-flight-orb {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #fff7d6 35%, #f5c767 70%, #ff8a65 100%);
+  box-shadow: 0 0 25px #ffffff, 0 0 45px #f5c767, 0 0 70px rgba(255, 138, 101, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: opacity 0.4s ease;
+}
+
+.magical-flight-orb.active {
+  opacity: 1;
+}
+
+/* Revolving 3D Starlight Rings around the Orb */
+.orb-revolving-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 10px #f5c767;
+  pointer-events: none;
+}
+
+.orb-revolving-ring.ring-1 {
+  width: 58px;
+  height: 24px;
+  transform: rotate(25deg);
+  animation: orbRingSpin1 2.2s linear infinite;
+}
+
+.orb-revolving-ring.ring-2 {
+  width: 24px;
+  height: 58px;
+  transform: rotate(-35deg);
+  animation: orbRingSpin2 2.8s linear infinite;
+}
+
+@keyframes orbRingSpin1 {
+  from { transform: rotate(25deg) rotateY(0deg); }
+  to { transform: rotate(25deg) rotateY(360deg); }
+}
+
+@keyframes orbRingSpin2 {
+  from { transform: rotate(-35deg) rotateX(0deg); }
+  to { transform: rotate(-35deg) rotateX(360deg); }
+}
+
+/* ----------------------------------------------------
+   GENIE DIALOGUE BUBBLE
+   ---------------------------------------------------- */
+.genie-speech-box {
+  position: relative;
+  width: 90%;
+  max-width: 340px;
+  margin-top: 14px;
+  padding: 12px 18px;
+  background: rgba(18, 14, 38, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(245, 208, 112, 0.4);
+  border-radius: var(--radius-md);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(245, 199, 103, 0.2);
+  text-align: center;
+  z-index: 10;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.genie-speaker-title {
+  font-size: 0.72rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gold-warm);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.genie-dialogue-phrase {
+  font-family: var(--font-story);
+  font-size: 1.05rem;
+  color: var(--cream-pure);
+  font-weight: 500;
+  line-height: 1.5;
+  min-height: 28px;
+  transition: opacity 0.4s ease;
+}
+
+/* ----------------------------------------------------
+   FINAL WISH CARD (THE GRAND CELESTIAL REWARD)
+   ---------------------------------------------------- */
+.final-wish-card-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.92);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.final-wish-card-stage.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.final-wish-grand-card {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  padding: 32px 24px 28px;
+  background: radial-gradient(circle at 50% 20%, rgba(32, 22, 60, 0.95) 0%, rgba(14, 10, 32, 0.98) 85%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(245, 208, 112, 0.6);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.75), 0 0 45px rgba(245, 199, 103, 0.35);
+  text-align: center;
+  animation: finalCardGlowBreath 3.5s ease-in-out infinite;
+}
+
+@keyframes finalCardGlowBreath {
+  0%, 100% { box-shadow: 0 12px 48px rgba(0, 0, 0, 0.75), 0 0 35px rgba(245, 199, 103, 0.3); }
+  50% { box-shadow: 0 12px 48px rgba(0, 0, 0, 0.75), 0 0 60px rgba(245, 199, 103, 0.55); }
+}
+
+.final-wish-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold-warm);
+  margin-bottom: 16px;
+  padding: 4px 14px;
+  background: rgba(245, 199, 103, 0.12);
+  border: 1px solid rgba(245, 208, 112, 0.3);
+  border-radius: var(--radius-full);
+}
+
+.final-wish-main-quote {
+  font-family: var(--font-serif);
+  font-size: 1.32rem;
+  line-height: 1.6;
+  color: var(--gold-warm);
+  text-shadow: 0 2px 18px rgba(245, 199, 103, 0.5);
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.final-wish-hbd-heart {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  color: #ff7597;
+  text-shadow: 0 0 20px rgba(255, 117, 151, 0.6);
+  font-weight: 700;
+  margin-bottom: 24px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.final-wish-hbd-heart.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn-proceed-cake {
+  margin-top: 6px;
+  width: 100%;
+}
+
+/* ----------------------------------------------------
+   LOW POWER & ACCESSIBILITY OPTIMIZATIONS
+   ---------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .wish-ball-item,
+  .lamp-aura-halo,
+  .genie-avatar-assembly,
+  .smoke-puff-ball,
+  .lamp-brass-shimmer {
+    animation: none !important;
+  }
+}

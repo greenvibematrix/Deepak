@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="styles/kerala-decor.css">
   <link rel="stylesheet" href="styles/scenes.css">
   <link rel="stylesheet" href="styles/animations.css">
+  <link rel="stylesheet" href="styles/wishes-scene.css">
 </head>
 <body>
 
@@ -123,7 +124,6 @@
                 <span class="core-sparkle">✨</span>
               </div>
             </div>
-            <p class="tap-flower-hint">Tap the blooming flower ✨</p>
           </div>
 
           <button type="button" class="magic-btn" id="btn-wake-lamp">
@@ -287,6 +287,136 @@
       </section>
 
       <!-- ====================================================
+           SCENE 8: THE WISHES — FLOATING WISH-BALLS, MAGIC LAMP & GENIE
+           ==================================================== -->
+      <section class="story-scene" id="scene-8" aria-label="The Wishes">
+        <div class="wishes-card-wrapper kasavu-frame">
+          <!-- Atmosphere Tint Layer (subtly deepens as wishes progress) -->
+          <div class="wishes-atmosphere-tint" id="wishes-atmosphere-tint"></div>
+
+          <!-- Real-time moving stardust canvas -->
+          <canvas id="wishes-particle-canvas"></canvas>
+
+          <!-- Top Scene Header & Counter -->
+          <div class="wishes-scene-header" id="wishes-scene-header">
+            <div class="jasmine-accent">
+              <span class="flower">🌸</span>
+              <span>The Magical Night of Wishes</span>
+            </div>
+            <h2 class="scene-title">The Wishes ✦</h2>
+            <div class="wishes-counter-pill" id="wishes-counter-pill">
+              <span class="dot-pulse"></span>
+              <span id="wishes-remaining-count">15 wishes remain</span>
+            </div>
+          </div>
+
+          <!-- Floating Wish Revealed Banner -->
+          <div class="revealed-wish-card-banner" id="revealed-wish-card" aria-live="polite">
+            <div class="revealed-wish-tag">
+              <span>✨ A Birthday Wish for You</span>
+            </div>
+            <p class="revealed-wish-quote" id="revealed-wish-quote"></p>
+          </div>
+
+          <!-- Floating Wish-Balls Arena -->
+          <div class="wishes-balls-arena" id="wishes-balls-arena">
+            <!-- Dynamic wish-balls will be spawned here -->
+          </div>
+
+          <!-- Mystery Pause Overlay ("That's all the wishes..." -> "...or is it?") -->
+          <div class="mystery-pause-overlay" id="mystery-pause-overlay" aria-live="assertive">
+            <h2 class="mystery-phrase-text" id="mystery-phrase-text">That's all the wishes...</h2>
+          </div>
+
+          <!-- Magic Lamp Stage (Materializes after mystery pause) -->
+          <div class="magic-lamp-stage" id="magic-lamp-stage">
+            <div class="lamp-gathering-particles" id="lamp-gathering-particles"></div>
+            
+            <div class="lamp-artwork-assembly" id="lamp-artwork-assembly" role="button" tabindex="0" title="Rub the magic lamp to awaken the magic!">
+              <div class="lamp-aura-halo"></div>
+              <div class="lamp-visual-frame">
+                <img src="assets/images/magic-lamp.jpg" alt="Enchanted Golden Magic Lamp on Jasmine Flowers">
+                <div class="lamp-brass-shimmer"></div>
+              </div>
+              <div class="lamp-spout-wisps">
+                <span class="spout-spark-particle p1"></span>
+                <span class="spout-spark-particle p2"></span>
+                <span class="spout-spark-particle p3"></span>
+              </div>
+            </div>
+
+            <!-- Rubbing Progress Meter -->
+            <div class="lamp-rub-progress-wrap">
+              <div class="lamp-rub-progress-fill" id="lamp-rub-progress-fill"></div>
+            </div>
+
+            <div class="lamp-instruction-banner">
+              <p class="lamp-intro-text">Maybe there's one more wish left.</p>
+              <div class="lamp-rub-hint">
+                <span class="swipe-hand-icon">👉</span>
+                <span>Rub or swipe the lamp ✨</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Moving Graphic Magic Blue Smoke Cloud Layer -->
+          <div class="magic-smoke-cloud-layer" id="magic-smoke-cloud">
+            <div class="smoke-puff-ball smoke-puff-1 blue-smoke"></div>
+            <div class="smoke-puff-ball smoke-puff-2 blue-smoke"></div>
+            <div class="smoke-puff-ball smoke-puff-3 blue-smoke"></div>
+            <div class="smoke-puff-ball smoke-puff-4 blue-smoke"></div>
+          </div>
+
+          <!-- Charming Magical Genie Character Stage (With Secret Note) -->
+          <div class="genie-character-stage" id="genie-character-stage">
+            <div class="genie-avatar-assembly">
+              <div class="genie-kasavu-halo"></div>
+              <div class="genie-orbiting-jasmine pos-g1">✨</div>
+              <div class="genie-orbiting-jasmine pos-g2">🌟</div>
+              <div class="genie-orbiting-jasmine pos-g3">✦</div>
+              <div class="genie-artwork-circle">
+                <img src="assets/images/genie-with-note.jpg" alt="Charming Magical Genie Holding a Secret Birthday Note" id="genie-img">
+              </div>
+              <div class="genie-waist-mist"></div>
+            </div>
+
+            <div class="genie-speech-box" id="genie-speech-box">
+              <div class="genie-note-scroll-badge">📜 A Note from the Genie ✨</div>
+              <div class="genie-speaker-title">
+                <span>✦ Magical Genie</span>
+              </div>
+              <p class="genie-dialogue-phrase" id="genie-dialogue-phrase">“You missed one wish.”</p>
+            </div>
+          </div>
+
+          <!-- Glowing Flight Orb that travels across screen -->
+          <div class="magical-flight-orb" id="magical-flight-orb">
+            <div class="orb-revolving-ring ring-1"></div>
+            <div class="orb-revolving-ring ring-2"></div>
+          </div>
+
+          <!-- Final Grand Wish Presentation Card -->
+          <div class="final-wish-card-stage" id="final-wish-card-stage">
+            <div class="final-wish-grand-card">
+              <div class="final-wish-header-badge">
+                <span>✦ A Secret Birthday Wish ✦</span>
+              </div>
+              <p class="final-wish-main-quote">
+                “May you always have something beautiful to look forward to.”
+              </p>
+              <div class="final-wish-hbd-heart" id="final-wish-hbd-heart">
+                Happy Birthday ❤️
+              </div>
+              <button type="button" class="magic-btn pulse-glow btn-proceed-cake" id="btn-proceed-cake">
+                Blow out the birthday candle 🎂 ✨
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ====================================================
            SCENE 9 & 10: BIRTHDAY CAKE & CANDLE
            ==================================================== -->
       <section class="story-scene" id="scene-9" aria-label="Birthday Cake & Candle">
@@ -298,22 +428,276 @@
             Make a wish and blow out the candle 🎂
           </p>
 
-          <!-- Interactive Cake & Candle Art -->
+          <!-- Interactive Masterpiece Cake & Candle Art -->
           <div class="cake-pedestal-wrapper">
-            <div class="interactive-cake-art">
-              <!-- Candle Assembly -->
+            <!-- Ambient Golden Glow Halo behind cake -->
+            <div class="cake-ambient-halo"></div>
+
+            <!-- Floating Celebration Fairy Sparkles -->
+            <div class="cake-sparkles-layer" aria-hidden="true">
+              <span class="cake-sparkle-item">✨</span>
+              <span class="cake-sparkle-item">✦</span>
+              <span class="cake-sparkle-item">✧</span>
+              <span class="cake-sparkle-item">✨</span>
+              <span class="cake-sparkle-item">★</span>
+              <span class="cake-sparkle-item">✦</span>
+            </div>
+
+            <div class="interactive-cake-art luxury-cake-container">
+              <!-- Candle Assembly: Centered atop the cake top tier -->
               <div class="candle-assembly" id="birthday-candle" role="button" tabindex="0" aria-label="Birthday candle. Tap to blow out.">
+                <div class="candle-flame-halo"></div>
                 <div class="candle-smoke-plume" id="candle-smoke"></div>
                 <div class="candle-flame" id="candle-flame"></div>
                 <div class="candle-wick"></div>
-                <div class="candle-stick"></div>
+                <div class="candle-stick luxury-candle">
+                  <div class="candle-gold-stripe stripe-1"></div>
+                  <div class="candle-gold-stripe stripe-2"></div>
+                  <div class="candle-gold-stripe stripe-3"></div>
+                </div>
               </div>
 
-              <!-- Cake Base -->
-              <div class="cake-tier">
-                <div class="cake-frosting-drip"></div>
-              </div>
-              <div class="cake-pedestal-plate"></div>
+              <!-- Masterpiece 2-Tier Gourmet Celebration Cake SVG -->
+              <svg class="luxury-cake-svg" viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg" aria-label="Gourmet two-tiered birthday cake for Sayandana">
+                <defs>
+                  <!-- 24K Kasavu Gold Metallic Gradient -->
+                  <linearGradient id="goldKasavu" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ab7b22" />
+                    <stop offset="20%" stop-color="#fad978" />
+                    <stop offset="45%" stop-color="#fff4be" />
+                    <stop offset="70%" stop-color="#dfaa36" />
+                    <stop offset="100%" stop-color="#8a5c10" />
+                  </linearGradient>
+
+                  <!-- Ornate Brass Pedestal Gradient -->
+                  <linearGradient id="goldStand" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#694303" />
+                    <stop offset="20%" stop-color="#cf9c34" />
+                    <stop offset="50%" stop-color="#ffec9e" />
+                    <stop offset="80%" stop-color="#c48f29" />
+                    <stop offset="100%" stop-color="#543300" />
+                  </linearGradient>
+
+                  <!-- Mirrored Platter Surface Gradient -->
+                  <linearGradient id="platterShine" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#2a1f10" />
+                    <stop offset="25%" stop-color="#eedab0" />
+                    <stop offset="50%" stop-color="#ffffff" />
+                    <stop offset="75%" stop-color="#edd5a4" />
+                    <stop offset="100%" stop-color="#23170a" />
+                  </linearGradient>
+
+                  <!-- Bottom Cake Tier - Velvet Ivory Sponge -->
+                  <linearGradient id="bottomTierGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#d6bca1" />
+                    <stop offset="25%" stop-color="#faf2e6" />
+                    <stop offset="55%" stop-color="#ffffff" />
+                    <stop offset="80%" stop-color="#f5e8d5" />
+                    <stop offset="100%" stop-color="#c9ad90" />
+                  </linearGradient>
+
+                  <!-- Top Cake Tier - Strawberry Rose Sponge -->
+                  <linearGradient id="topTierGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#e8b0be" />
+                    <stop offset="28%" stop-color="#fff0f4" />
+                    <stop offset="55%" stop-color="#ffffff" />
+                    <stop offset="80%" stop-color="#fae1e8" />
+                    <stop offset="100%" stop-color="#dba0b0" />
+                  </linearGradient>
+
+                  <!-- Glossy Strawberry Glaze Gradient -->
+                  <linearGradient id="strawberryGlaze" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#ff3b75" />
+                    <stop offset="35%" stop-color="#e61054" />
+                    <stop offset="75%" stop-color="#b00639" />
+                    <stop offset="100%" stop-color="#7a0022" />
+                  </linearGradient>
+
+                  <!-- Plump Strawberry Radial Glaze -->
+                  <radialGradient id="strawberryFruit" cx="30%" cy="25%" r="70%">
+                    <stop offset="0%" stop-color="#ff7597" />
+                    <stop offset="45%" stop-color="#e61550" />
+                    <stop offset="85%" stop-color="#a30531" />
+                    <stop offset="100%" stop-color="#590018" />
+                  </radialGradient>
+
+                  <!-- Whipped Cream Dollop Radial Shading -->
+                  <radialGradient id="creamRosette" cx="40%" cy="30%" r="65%">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="65%" stop-color="#fff5fa" />
+                    <stop offset="90%" stop-color="#f2dbe4" />
+                    <stop offset="100%" stop-color="#e2c2ce" />
+                  </radialGradient>
+
+                  <!-- Spherical Gold Pearl Gradient -->
+                  <radialGradient id="pearlGold" cx="35%" cy="30%" r="65%">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="35%" stop-color="#fce79a" />
+                    <stop offset="70%" stop-color="#d49f2b" />
+                    <stop offset="100%" stop-color="#734b07" />
+                  </radialGradient>
+
+                  <!-- Soft Shadow Filters -->
+                  <filter id="cakeDropShadow" x="-15%" y="-15%" width="130%" height="135%">
+                    <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000000" flood-opacity="0.65" />
+                  </filter>
+                  <filter id="softGaze" x="-10%" y="-10%" width="120%" height="125%">
+                    <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.4" />
+                  </filter>
+                  <filter id="pearlGlow">
+                    <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#f5c767" flood-opacity="0.8" />
+                  </filter>
+                </defs>
+
+                <!-- ================= 1. PEDESTAL STAND ================= -->
+                <!-- Pedestal Base Cast Shadow -->
+                <ellipse cx="170" cy="270" rx="90" ry="8" fill="#000000" opacity="0.55" filter="url(#cakeDropShadow)" />
+                <!-- Stepped Fluted Pedestal Foot -->
+                <ellipse cx="170" cy="265" rx="82" ry="8" fill="url(#goldStand)" />
+                <path d="M92,264 Q170,272 248,264 L244,258 Q170,265 96,258 Z" fill="#422501" />
+                <ellipse cx="170" cy="258" rx="68" ry="6" fill="url(#goldStand)" />
+
+                <!-- Sculpted Baluster Stem with Gold Highlights -->
+                <path d="M150,226 Q170,234 190,226 L184,258 Q170,262 156,258 Z" fill="url(#goldStand)" />
+                <ellipse cx="170" cy="242" rx="14" ry="4" fill="url(#goldKasavu)" />
+
+                <!-- Mirrored Platter Rim & Beveled Dish -->
+                <ellipse cx="170" cy="226" rx="150" ry="18" fill="url(#goldStand)" filter="url(#cakeDropShadow)" />
+                <!-- Scalloped Gold Lace Trim along Platter Edge -->
+                <path d="M22,225 Q30,230 38,226 Q48,231 58,227 Q68,232 78,228 Q88,233 98,229 Q108,234 118,230 Q128,235 138,231 Q148,236 158,232 Q168,237 178,232 Q188,236 198,231 Q208,235 218,230 Q228,234 238,229 Q248,233 258,228 Q268,232 278,227 Q288,231 298,226 Q308,230 318,225" fill="none" stroke="url(#goldKasavu)" stroke-width="2.5" />
+                <ellipse cx="170" cy="223" rx="146" ry="16" fill="url(#platterShine)" />
+                <ellipse cx="170" cy="223" rx="138" ry="14" fill="none" stroke="url(#goldKasavu)" stroke-width="1.8" opacity="0.8" />
+
+                <!-- ================= 2. BOTTOM TIER ================= -->
+                <!-- Bottom Tier Cylinder Body -->
+                <path d="M52,160 L52,216 Q170,246 288,216 L288,160 Q170,188 52,160 Z" fill="url(#bottomTierGrad)" filter="url(#cakeDropShadow)" />
+                <!-- Bottom Tier Top Surface -->
+                <ellipse cx="170" cy="160" rx="118" ry="18" fill="url(#bottomTierGrad)" />
+
+                <!-- Luscious Dripping Strawberry Mirroir Glaze -->
+                <path d="M52,160 Q64,178 76,163 Q88,202 102,166 Q118,210 134,164 Q152,196 170,162 Q188,212 206,165 Q224,198 240,163 Q256,192 270,164 Q280,175 288,160 Q170,188 52,160 Z" fill="url(#strawberryGlaze)" opacity="0.95" />
+                <!-- Glossy Highlights on Glaze Curves -->
+                <path d="M58,163 Q85,176 130,166 Q150,178 185,164 Q230,178 282,163" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.65" />
+                <circle cx="102" cy="198" r="3.5" fill="#e61054" />
+                <circle cx="103" cy="197" r="1.2" fill="#ffffff" opacity="0.8" />
+                <circle cx="134" cy="206" r="4" fill="#e61054" />
+                <circle cx="135" cy="205" r="1.5" fill="#ffffff" opacity="0.8" />
+                <circle cx="206" cy="208" r="4.2" fill="#e61054" />
+                <circle cx="207" cy="207" r="1.5" fill="#ffffff" opacity="0.8" />
+
+                <!-- Ring of 3D Golden Kasavu Pearls along Bottom Rim -->
+                <g filter="url(#pearlGlow)">
+                  <circle cx="62" cy="217" r="4" fill="url(#pearlGold)" />
+                  <circle cx="80" cy="223" r="4" fill="url(#pearlGold)" />
+                  <circle cx="100" cy="227" r="4" fill="url(#pearlGold)" />
+                  <circle cx="122" cy="231" r="4" fill="url(#pearlGold)" />
+                  <circle cx="145" cy="233" r="4" fill="url(#pearlGold)" />
+                  <circle cx="170" cy="234" r="4.5" fill="url(#pearlGold)" />
+                  <circle cx="195" cy="233" r="4" fill="url(#pearlGold)" />
+                  <circle cx="218" cy="231" r="4" fill="url(#pearlGold)" />
+                  <circle cx="240" cy="227" r="4" fill="url(#pearlGold)" />
+                  <circle cx="260" cy="223" r="4" fill="url(#pearlGold)" />
+                  <circle cx="278" cy="217" r="4" fill="url(#pearlGold)" />
+                </g>
+
+                <!-- Elegant Inscription Plaque: "SAYANDANA ✨" -->
+                <g filter="url(#softGaze)">
+                  <!-- Gold Cartouche Plaque -->
+                  <rect x="94" y="182" width="152" height="30" rx="15" fill="#180e2b" stroke="url(#goldKasavu)" stroke-width="2" />
+                  <rect x="97" y="185" width="146" height="24" rx="12" fill="none" stroke="url(#goldKasavu)" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.85" />
+                  <!-- Sparkling Name Inscription -->
+                  <text x="170" y="202" text-anchor="middle" font-family="'Cinzel', Georgia, serif" font-size="12.5" font-weight="700" fill="#ffd978" letter-spacing="2">✨ SAYANDANA ✨</text>
+                </g>
+
+                <!-- Lower Tier Garnishes: Fresh Strawberries & Jasmine -->
+                <g transform="translate(64, 140) scale(0.95)" filter="url(#softGaze)">
+                  <path d="M12,4 C18,4 24,12 20,24 C18,29 12,32 12,32 C12,32 6,29 4,24 C0,12 6,4 12,4 Z" fill="url(#strawberryFruit)" />
+                  <circle cx="10" cy="12" r="0.9" fill="#ffe066" />
+                  <circle cx="14" cy="14" r="0.9" fill="#ffe066" />
+                  <circle cx="9" cy="20" r="0.9" fill="#ffe066" />
+                  <circle cx="15" cy="22" r="0.9" fill="#ffe066" />
+                  <path d="M12,4 Q10,-2 6,1 Q9,4 12,4 Q15,-2 18,1 Q15,4 12,4 Z" fill="#2d6a4f" />
+                </g>
+                <g transform="translate(94, 150) scale(0.75)" filter="url(#softGaze)">
+                  <circle cx="12" cy="12" r="3.5" fill="#f5c767" />
+                  <ellipse cx="12" cy="4" rx="3.5" ry="6" fill="#ffffff" />
+                  <ellipse cx="12" cy="20" rx="3.5" ry="6" fill="#ffffff" />
+                  <ellipse cx="4" cy="12" rx="6" ry="3.5" fill="#ffffff" />
+                  <ellipse cx="20" cy="12" rx="6" ry="3.5" fill="#ffffff" />
+                </g>
+                <g transform="translate(244, 140) scale(0.95)" filter="url(#softGaze)">
+                  <path d="M12,4 C18,4 24,12 20,24 C18,29 12,32 12,32 C12,32 6,29 4,24 C0,12 6,4 12,4 Z" fill="url(#strawberryFruit)" />
+                  <circle cx="10" cy="10" r="0.9" fill="#ffe066" />
+                  <circle cx="14" cy="14" r="0.9" fill="#ffe066" />
+                  <circle cx="9" cy="20" r="0.9" fill="#ffe066" />
+                  <path d="M12,4 Q10,-2 6,1 Q9,4 12,4 Q15,-2 18,1 Q15,4 12,4 Z" fill="#2d6a4f" />
+                </g>
+                <g transform="translate(224, 150) scale(0.75)" filter="url(#softGaze)">
+                  <circle cx="12" cy="12" r="3.5" fill="#f5c767" />
+                  <ellipse cx="12" cy="4" rx="3.5" ry="6" fill="#ffffff" />
+                  <ellipse cx="12" cy="20" rx="3.5" ry="6" fill="#ffffff" />
+                  <ellipse cx="4" cy="12" rx="6" ry="3.5" fill="#ffffff" />
+                  <ellipse cx="20" cy="12" rx="6" ry="3.5" fill="#ffffff" />
+                </g>
+
+                <!-- ================= 3. TOP TIER ================= -->
+                <!-- Top Tier Cylinder Body -->
+                <path d="M96,96 L96,146 Q170,168 244,146 L244,96 Q170,118 96,96 Z" fill="url(#topTierGrad)" filter="url(#cakeDropShadow)" />
+                <!-- Top Tier Top Surface -->
+                <ellipse cx="170" cy="96" rx="74" ry="14" fill="url(#topTierGrad)" />
+
+                <!-- Delicate White Vanilla Chantilly Drips -->
+                <path d="M96,96 Q105,116 114,99 Q124,128 135,100 Q146,120 158,98 Q170,132 182,99 Q194,122 206,99 Q218,126 230,100 Q238,110 244,96 Q170,118 96,96 Z" fill="#ffffff" opacity="0.97" />
+                <path d="M100,98 Q135,110 170,101 Q205,110 240,98" fill="none" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" />
+
+                <!-- Sculpted Whipped Cream Rosettes around Top Rim -->
+                <g filter="url(#softGaze)">
+                  <!-- Rosette 1 (Left) -->
+                  <circle cx="106" cy="95" r="9" fill="url(#creamRosette)" />
+                  <circle cx="106" cy="94" r="2.8" fill="url(#pearlGold)" />
+
+                  <!-- Rosette 2 -->
+                  <circle cx="128" cy="103" r="9.5" fill="url(#creamRosette)" />
+                  <circle cx="128" cy="102" r="3" fill="url(#pearlGold)" />
+
+                  <!-- Rosette 3 (Center Front) -->
+                  <circle cx="170" cy="108" r="10" fill="url(#creamRosette)" />
+                  <circle cx="170" cy="107" r="3.2" fill="url(#pearlGold)" />
+
+                  <!-- Rosette 4 -->
+                  <circle cx="212" cy="103" r="9.5" fill="url(#creamRosette)" />
+                  <circle cx="212" cy="102" r="3" fill="url(#pearlGold)" />
+
+                  <!-- Rosette 5 (Right) -->
+                  <circle cx="234" cy="95" r="9" fill="url(#creamRosette)" />
+                  <circle cx="234" cy="94" r="2.8" fill="url(#pearlGold)" />
+                </g>
+
+                <!-- Top Tier Glazed Strawberries -->
+                <g transform="translate(138, 80) scale(0.72)" filter="url(#softGaze)">
+                  <path d="M12,4 C18,4 24,12 20,24 C18,29 12,32 12,32 C12,32 6,29 4,24 C0,12 6,4 12,4 Z" fill="url(#strawberryFruit)" />
+                  <circle cx="10" cy="12" r="0.9" fill="#ffe066" />
+                  <circle cx="14" cy="14" r="0.9" fill="#ffe066" />
+                  <circle cx="12" cy="20" r="0.9" fill="#ffe066" />
+                  <path d="M12,4 Q10,-2 6,1 Q9,4 12,4 Q15,-2 18,1 Q15,4 12,4 Z" fill="#2d6a4f" />
+                </g>
+                <g transform="translate(186, 80) scale(0.72)" filter="url(#softGaze)">
+                  <path d="M12,4 C18,4 24,12 20,24 C18,29 12,32 12,32 C12,32 6,29 4,24 C0,12 6,4 12,4 Z" fill="url(#strawberryFruit)" />
+                  <circle cx="10" cy="12" r="0.9" fill="#ffe066" />
+                  <circle cx="14" cy="14" r="0.9" fill="#ffe066" />
+                  <circle cx="12" cy="20" r="0.9" fill="#ffe066" />
+                  <path d="M12,4 Q10,-2 6,1 Q9,4 12,4 Q15,-2 18,1 Q15,4 12,4 Z" fill="#2d6a4f" />
+                </g>
+
+                <!-- Delicate Jasmine Blossom on Top Tier Center -->
+                <g transform="translate(160, 94) scale(0.65)">
+                  <circle cx="12" cy="12" r="3.5" fill="#f5c767" />
+                  <ellipse cx="12" cy="4" rx="3.5" ry="6" fill="#ffffff" />
+                  <ellipse cx="12" cy="20" rx="3.5" ry="6" fill="#ffffff" />
+                  <ellipse cx="4" cy="12" rx="6" ry="3.5" fill="#ffffff" />
+                  <ellipse cx="20" cy="12" rx="6" ry="3.5" fill="#ffffff" />
+                </g>
+              </svg>
             </div>
           </div>
 
@@ -472,7 +856,14 @@
                 <span>🌙</span>
               </div>
               <div class="envelope-letter-card">
-                <div class="letter-creator-name">— Deepak 🤍</div>
+                <!-- Scratch-to-reveal gold cover over Deepak's name -->
+                <div class="envelope-scratch-container" id="envelope-scratch-container">
+                  <div class="letter-creator-name" id="envelope-creator-name">— Deepak 🤍</div>
+                  <canvas id="envelope-scratch-canvas" class="envelope-scratch-canvas" width="210" height="44" aria-label="Scratch to reveal who made this"></canvas>
+                </div>
+                <div class="envelope-scratch-hint" id="envelope-scratch-hint">
+                  <span>✨ Scratch the gold to reveal ✨</span>
+                </div>
                 <div class="letter-creator-desc">
                   Just a little birthday corner made with good wishes.
                 </div>
@@ -520,11 +911,36 @@
             May this year be kinder,<br>
             brighter,<br>
             and full of beautiful surprises.<br><br>
-            Take care.<br>
-            And keep making wishes. ✨
+            May your days be filled with quiet peace, genuine smiles, and dreams that quietly turn into reality.<br><br>
+            May you always find reasons to laugh, strength when things feel heavy, and warmth in every step you take.<br><br>
+            Take care of yourself, always.<br>
+            And never stop making wishes. ✨
           </p>
 
-          <div class="final-signature" id="final-signature-deepak">— Deepak</div>
+          <!-- Interactive Scratch-to-Reveal Card for Deepak's Name -->
+          <div class="scratch-card-wrapper" id="scratch-name-container">
+            <div class="scratch-card-prompt">
+              <span class="scratch-star-icon">✨</span>
+              <span>Scratch to reveal who wished you</span>
+            </div>
+
+            <div class="scratch-card-area" id="scratch-card-area">
+              <!-- Revealed Layer Underneath -->
+              <div class="scratch-card-underneath" id="scratch-underneath">
+                <span class="scratch-from-label">Warmest wishes always,</span>
+                <div class="scratch-signature-name">— Deepak 🤍</div>
+                <span class="scratch-signature-sub">Just a little birthday magic for you</span>
+              </div>
+
+              <!-- Scratchable Canvas Overlay -->
+              <canvas class="scratch-canvas" id="scratch-canvas" width="280" height="96" aria-label="Scratch card. Scratch with finger or mouse to reveal creator's name."></canvas>
+            </div>
+
+            <div class="scratch-hint-bar" id="scratch-hint-bar">
+              <span class="scratch-touch-hint">👆 Rub with finger or scratch with mouse</span>
+              <button type="button" class="scratch-quick-reveal" id="btn-scratch-quick-reveal">Quick reveal ✨</button>
+            </div>
+          </div>
 
           <button type="button" class="magic-btn secondary" id="btn-replay-magic" style="margin-top: 24px;">
             Replay the magic ↺
@@ -551,6 +967,7 @@
   <script src="scripts/confetti.js"></script>
   <script src="scripts/candle-mic.js"></script>
   <script src="scripts/audio-manager.js"></script>
+  <script src="scripts/wishes-experience.js"></script>
   <script src="scripts/app.js"></script>
 </body>
 </html>
