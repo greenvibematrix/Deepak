@@ -254,7 +254,11 @@ class BirthdayAudioManager {
     this.toggleButton = null;
     this.soundWavePill = null;
 
-    document.addEventListener("DOMContentLoaded", () => this.init());
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => this.init());
+    } else {
+      this.init();
+    }
   }
 
   /**

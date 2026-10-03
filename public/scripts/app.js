@@ -27,7 +27,11 @@ class BirthdayApp {
     this.guardianSpeech = null;
     this.isSubmitting = false;
 
-    document.addEventListener("DOMContentLoaded", () => this.init());
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => this.init());
+    } else {
+      this.init();
+    }
   }
 
   init() {
@@ -572,18 +576,32 @@ class BirthdayApp {
     setTimeout(() => {
       if (openingCard) openingCard.classList.add("visible");
       if (openingText1) openingText1.classList.add("fade-in");
-    }, 800);
+    }, 250);
 
     setTimeout(() => {
       if (openingText2) openingText2.classList.add("fade-in");
-    }, 2800);
+    }, 1100);
 
     setTimeout(() => {
       if (enterBtn) {
         enterBtn.classList.add("visible");
         enterBtn.classList.add("pulse-glow");
       }
-    }, 4200);
+    }, 1800);
+
+    // Allow user to tap anywhere to reveal the button immediately
+    const scene1 = document.getElementById("scene-1");
+    if (scene1) {
+      scene1.addEventListener("click", () => {
+        if (openingCard) openingCard.classList.add("visible");
+        if (openingText1) openingText1.classList.add("fade-in");
+        if (openingText2) openingText2.classList.add("fade-in");
+        if (enterBtn) {
+          enterBtn.classList.add("visible");
+          enterBtn.classList.add("pulse-glow");
+        }
+      });
+    }
   }
 
   /**
