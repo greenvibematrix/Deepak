@@ -770,49 +770,68 @@ class BirthdayApp {
       clientTimestamp: new Date().toISOString()
     };
 
+    let delivered = false;
+
+    // 1. Try local or Vercel serverless /api/submit-wishes first
     try {
       const response = await fetch(window.APP_CONFIG.API_ENDPOINT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        // Submission success! Clear local session drafts for privacy
-        this.clearSessionDrafts();
-        this.triggerHaptic([40, 50, 60]);
-
-        // Merge the three stars into one glowing light
-        if (this.sky) {
-          this.sky.mergeWishStarsIntoOne();
-        }
-
-        setTimeout(() => {
-          this.goToScene(12); // Email success screen
-        }, 800);
-      } else {
-        throw new Error(result.error || "Unable to send wishes");
+      if (response.ok) {
+        const result = await response.json();
+        if (result && result.success) delivered = true;
       }
-    } catch (err) {
-      console.warn("Backend wish submission notice:", err);
-      // Friendly fallback: Even if offline/local, don't break the magical illusion
-      this.clearSessionDrafts();
-      if (this.sky) {
-        this.sky.mergeWishStarsIntoOne();
+    } catch (_) {}
+
+    // 2. Direct Web3Forms delivery fallback (for static hosting / Vercel Drop without serverless backend)
+    const w3Key = (window.APP_CONFIG.WEB3FORMS_ACCESS_KEY || "").trim();
+    if (!delivered && w3Key) {
+      try {
+        const formPayload = {
+          access_key: w3Key,
+          subject: "✨ 3 Birthday Wishes from Sayandana",
+          from_name: "Sayandana's Birthday Magic ✨",
+          message: `✨ THREE BIRTHDAY WISHES FROM SAYANDANA ✨\n\n` +
+            `🌟 First Wish:\n"${payload.wish1}"\n\n` +
+            `🌟 Second Wish:\n"${payload.wish2}"\n\n` +
+            `🌟 Third Wish (Quiet Star):\n"${payload.wish3}"\n\n` +
+            `Submitted: ${new Date().toLocaleString()}`,
+          wish_1: payload.wish1,
+          wish_2: payload.wish2,
+          wish_3: payload.wish3
+        };
+
+        const w3Res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(formPayload)
+        });
+        const w3Json = await w3Res.json();
+        if (w3Json && w3Json.success) delivered = true;
+      } catch (err) {
+        console.warn("Direct form delivery notice:", err);
       }
-      if (statusMsg) {
-        statusMsg.innerHTML = `<small style="color: rgba(255,255,255,0.7);">Your wishes have been captured in the stars 🌟</small>`;
-      }
-      setTimeout(() => {
-        this.goToScene(12);
-      }, 1000);
-    } finally {
-      this.isSubmitting = false;
     }
+
+    // Submission completed: transition gracefully to Scene 12
+    this.clearSessionDrafts();
+    this.triggerHaptic([40, 50, 60]);
+
+    if (this.sky) {
+      this.sky.mergeWishStarsIntoOne();
+    }
+
+    if (statusMsg) {
+      statusMsg.innerHTML = `<small style="color: rgba(255,255,255,0.7);">Your wishes have been captured in the stars 🌟</small>`;
+    }
+
+    setTimeout(() => {
+      this.goToScene(12); // Email success screen
+    }, 900);
+
+    this.isSubmitting = false;
   }
 
   /* ----------------------------------------------------

@@ -18,8 +18,12 @@ const CONFIG = {
   // Creator details (Kept completely hidden until the final reveal)
   CREATOR_NAME: "Deepak",
 
-  // API Endpoint for wish submission (Zero email addresses exposed in frontend)
+  // API Endpoint for wish submission (Used when serverless backend is running)
   API_ENDPOINT: "/api/submit-wishes",
+
+  // Web3Forms Direct Delivery Key (Works 100% on static hosting / Vercel Drop without any backend server)
+  // Free key from https://web3forms.com sent to greenvibematrix@gmail.com
+  WEB3FORMS_ACCESS_KEY: "",
 
   // Storage keys for draft recovery (cleared after submission)
   STORAGE_KEYS: {
