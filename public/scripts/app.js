@@ -258,6 +258,13 @@ class BirthdayApp {
           this.triggerHaptic([30, 40]);
           envelope.classList.add("opened");
 
+          // Initialize bright gold scratch canvas once after envelope opens
+          setTimeout(() => {
+            if (typeof this.initEnvelopeScratchCanvas === "function") {
+              this.initEnvelopeScratchCanvas();
+            }
+          }, 320);
+
           // Sincere, gentle reveal sequence
           setTimeout(() => {
             if (starsContainer) {
@@ -802,94 +809,124 @@ class BirthdayApp {
     const quickRevealBtn = document.getElementById("btn-scratch-quick-reveal");
     if (!canvas || !container) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     let isDrawing = false;
     let isRevealed = false;
+    let strokeCount = 0;
+    let lastX = 0;
+    let lastY = 0;
 
     const initCanvas = () => {
-      isRevealed = false;
+      if (isRevealed) return;
+      strokeCount = 0;
       canvas.classList.remove("fade-out");
+      canvas.style.display = "block";
       container.classList.remove("revealed");
 
       const rect = canvas.getBoundingClientRect();
-      const w = rect.width > 0 ? rect.width : 280;
-      const h = rect.height > 0 ? rect.height : 96;
+      const w = rect.width > 0 ? Math.round(rect.width) : 280;
+      const h = rect.height > 0 ? Math.round(rect.height) : 96;
 
       canvas.width = w;
       canvas.height = h;
 
-      // 1. Gold foil metallic gradient
+      // 1. Brilliant Radiant Gold Layer
       const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, "#9e6f15");
-      grad.addColorStop(0.2, "#f7d579");
-      grad.addColorStop(0.48, "#fff6cc");
-      grad.addColorStop(0.72, "#dfa932");
-      grad.addColorStop(0.9, "#8a5808");
-      grad.addColorStop(1, "#f3ce6d");
+      grad.addColorStop(0, "#c4890c");
+      grad.addColorStop(0.18, "#ffd700");
+      grad.addColorStop(0.38, "#fffbe8");
+      grad.addColorStop(0.55, "#ffcf33");
+      grad.addColorStop(0.78, "#ffd859");
+      grad.addColorStop(0.92, "#f0ad18");
+      grad.addColorStop(1, "#b37b0b");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // 2. Subtle decorative stardust speckles on the gold coating
-      ctx.fillStyle = "rgba(255, 255, 255, 0.55)";
-      for (let i = 0; i < 40; i++) {
+      // 2. Gloss Sheen Band
+      const sheenGrad = ctx.createLinearGradient(0, 0, w, h);
+      sheenGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
+      sheenGrad.addColorStop(0.48, "rgba(255, 255, 255, 0.45)");
+      sheenGrad.addColorStop(0.52, "rgba(255, 255, 255, 0.45)");
+      sheenGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+      ctx.fillStyle = sheenGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 3. Stardust Speckles
+      ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+      for (let i = 0; i < 45; i++) {
         const x = (i * 31 + 13) % w;
         const y = (i * 29 + 17) % h;
-        const r = (i % 3) * 0.7 + 0.8;
+        const r = (i % 3) * 0.8 + 0.9;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // 3. Delicate gold border stroke inside
-      ctx.strokeStyle = "rgba(255, 240, 180, 0.7)";
-      ctx.lineWidth = 1.5;
+      // 4. Double Gold Border
+      ctx.strokeStyle = "rgba(255, 245, 190, 0.9)";
+      ctx.lineWidth = 2.5;
       ctx.strokeRect(3, 3, w - 6, h - 6);
 
-      // 4. Centered prompt label
-      ctx.fillStyle = "#331f04";
-      ctx.font = "bold 13px 'Cinzel', Georgia, serif";
+      ctx.strokeStyle = "rgba(168, 105, 10, 0.75)";
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(7, 7, w - 14, h - 14);
+
+      // 5. Centered Deep Gold Stamped Lettering
+      ctx.fillStyle = "#261300";
+      ctx.font = "bold 13.5px 'Cinzel', Georgia, serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText("✨ SCRATCH TO REVEAL ✨", w / 2, h / 2 - 4);
+      ctx.fillText("✨ SCRATCH TO REVEAL ✨", w / 2, h / 2 - 3);
 
-      ctx.fillStyle = "rgba(60, 36, 6, 0.75)";
+      ctx.fillStyle = "rgba(45, 25, 0, 0.75)";
       ctx.font = "italic 11px sans-serif";
-      ctx.fillText("swipe or drag to reveal Deepak", w / 2, h / 2 + 16);
+      ctx.fillText("swipe or tap to reveal", w / 2, h / 2 + 16);
     };
 
     this.initScratchCardCanvas = initCanvas;
-    this.resetScratchCard = initCanvas;
+    this.resetScratchCard = () => {
+      isRevealed = false;
+      initCanvas();
+    };
 
-    // Initialize once DOM is ready or visible
     setTimeout(initCanvas, 100);
 
     const getPos = (e) => {
       const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       return {
-        x: clientX - rect.left,
-        y: clientY - rect.top,
-        screenX: clientX,
-        screenY: clientY
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        screenX: e.clientX,
+        screenY: e.clientY
       };
     };
 
-    const scratch = (pos) => {
+    const scratchTo = (currentX, currentY, screenX, screenY) => {
       if (isRevealed) return;
 
       ctx.globalCompositeOperation = "destination-out";
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.lineWidth = 36;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
 
-      // Trigger soft haptic
-      if (Math.random() < 0.3) {
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(currentX, currentY);
+      ctx.stroke();
+
+      lastX = currentX;
+      lastY = currentY;
+      strokeCount++;
+
+      if (Math.random() < 0.35) {
         this.triggerHaptic(12);
       }
 
-      // Spawn gold sparkle particles
-      this.spawnScratchSparkle(pos.screenX, pos.screenY);
+      this.spawnScratchSparkle(screenX, screenY);
+
+      if (strokeCount > 10 || strokeCount % 4 === 0) {
+        checkProgress();
+      }
     };
 
     const checkProgress = () => {
@@ -898,7 +935,7 @@ class BirthdayApp {
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imgData.data;
         let transparentPixels = 0;
-        const step = 20; // Sample every 5th pixel
+        const step = 20;
         let sampled = 0;
         for (let i = 3; i < data.length; i += step) {
           sampled++;
@@ -907,10 +944,12 @@ class BirthdayApp {
           }
         }
         const percent = transparentPixels / sampled;
-        if (percent >= 0.35) {
+        if (percent >= 0.22 || strokeCount >= 18) {
           revealEverything();
         }
-      } catch (err) {}
+      } catch (err) {
+        if (strokeCount >= 14) revealEverything();
+      }
     };
 
     const revealEverything = () => {
@@ -920,49 +959,59 @@ class BirthdayApp {
       canvas.classList.add("fade-out");
       container.classList.add("revealed");
 
-      // Play soft chime audio if available
+      setTimeout(() => {
+        canvas.style.display = "none";
+      }, 500);
+
       if (window.wishesAudio && typeof window.wishesAudio.playPopSound === "function") {
         window.wishesAudio.playPopSound(5);
       }
 
-      // Launch celebratory confetti burst
       if (this.confetti) {
         this.confetti.launchBurst(40);
       }
     };
 
-    canvas.addEventListener("mousedown", (e) => {
-      isDrawing = true;
-      scratch(getPos(e));
-    });
-
-    window.addEventListener("mousemove", (e) => {
-      if (!isDrawing) return;
-      scratch(getPos(e));
-    });
-
-    window.addEventListener("mouseup", () => {
-      if (isDrawing) {
-        isDrawing = false;
-        checkProgress();
+    // Pointer Events: Seamless mouse, touch, and stylus support
+    canvas.addEventListener("pointerdown", (e) => {
+      if (isRevealed) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (canvas.setPointerCapture) {
+        try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
       }
+      isDrawing = true;
+      const pos = getPos(e);
+      lastX = pos.x;
+      lastY = pos.y;
+      scratchTo(pos.x, pos.y, pos.screenX, pos.screenY);
     });
 
-    canvas.addEventListener("touchstart", (e) => {
-      isDrawing = true;
-      scratch(getPos(e));
-    }, { passive: true });
+    canvas.addEventListener("pointermove", (e) => {
+      if (!isDrawing || isRevealed) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const pos = getPos(e);
+      scratchTo(pos.x, pos.y, pos.screenX, pos.screenY);
+    });
 
-    canvas.addEventListener("touchmove", (e) => {
+    const endPointer = (e) => {
       if (!isDrawing) return;
-      scratch(getPos(e));
-    }, { passive: true });
-
-    canvas.addEventListener("touchend", () => {
-      if (isDrawing) {
-        isDrawing = false;
-        checkProgress();
+      isDrawing = false;
+      if (canvas.releasePointerCapture) {
+        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
       }
+      checkProgress();
+    };
+
+    canvas.addEventListener("pointerup", endPointer);
+    canvas.addEventListener("pointercancel", endPointer);
+
+    // Direct Tap / Click fallback
+    canvas.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      revealEverything();
     });
 
     if (quickRevealBtn) {
@@ -1003,95 +1052,131 @@ class BirthdayApp {
   setupEnvelopeScratch() {
     const canvas = document.getElementById("envelope-scratch-canvas");
     const container = document.getElementById("envelope-scratch-container");
-    const hint = document.getElementById("envelope-scratch-hint");
     if (!canvas || !container) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     let isDrawing = false;
     let isRevealed = false;
+    let isInitialized = false;
+    let strokeCount = 0;
+    let lastX = 0;
+    let lastY = 0;
 
     const initCanvas = () => {
-      isRevealed = false;
+      // NEVER redraw if already revealed or initialized!
+      if (isRevealed) return;
+      isInitialized = true;
+      strokeCount = 0;
       canvas.classList.remove("fade-out");
+      canvas.style.display = "block";
       container.classList.remove("revealed");
-      if (hint) {
-        hint.innerHTML = `<span>✨ Scratch the gold to reveal ✨</span>`;
-        hint.style.display = "block";
-      }
 
       const rect = canvas.getBoundingClientRect();
-      const w = rect.width > 0 ? rect.width : 210;
-      const h = rect.height > 0 ? rect.height : 44;
+      const w = rect.width > 0 ? Math.round(rect.width) : 228;
+      const h = rect.height > 0 ? Math.round(rect.height) : 120;
 
       canvas.width = w;
       canvas.height = h;
 
-      // 1. Lustrous metallic gold scratch layer
+      // 1. Brilliant, Radiant Metallic Gold Layer (High shine & luminosity)
       const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, "#9e6f15");
-      grad.addColorStop(0.25, "#f7d579");
-      grad.addColorStop(0.5, "#fff8d6");
-      grad.addColorStop(0.75, "#dfa932");
-      grad.addColorStop(1, "#8a5808");
+      grad.addColorStop(0, "#c4890c");
+      grad.addColorStop(0.18, "#ffd700"); // Vivid pure gold
+      grad.addColorStop(0.38, "#fffbe8"); // Sparkling high-sheen specular highlight
+      grad.addColorStop(0.55, "#ffcf33");
+      grad.addColorStop(0.78, "#ffd859");
+      grad.addColorStop(0.92, "#f0ad18");
+      grad.addColorStop(1, "#b37b0b");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // 2. Delicate decorative stardust speckles
-      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
-      for (let i = 0; i < 30; i++) {
-        const x = (i * 27 + 11) % w;
-        const y = (i * 19 + 7) % h;
-        const r = (i % 3) * 0.6 + 0.8;
+      // 2. Diagonal Gloss Sheen band across center for extra luster
+      const sheenGrad = ctx.createLinearGradient(0, 0, w, h * 0.7);
+      sheenGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
+      sheenGrad.addColorStop(0.45, "rgba(255, 255, 255, 0.4)");
+      sheenGrad.addColorStop(0.55, "rgba(255, 255, 255, 0.4)");
+      sheenGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+      ctx.fillStyle = sheenGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 3. Diamond & Star Glitter Stardust Speckles
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      for (let i = 0; i < 45; i++) {
+        const x = (i * 37 + 13) % w;
+        const y = (i * 29 + 17) % h;
+        const r = (i % 3) * 0.8 + 0.9;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // 3. Delicate gold border stroke inside
-      ctx.strokeStyle = "rgba(255, 240, 180, 0.75)";
-      ctx.lineWidth = 1.2;
-      ctx.strokeRect(2, 2, w - 4, h - 4);
+      // 4. Double Metallic Gold Beveled Borders
+      ctx.strokeStyle = "rgba(255, 250, 200, 0.95)";
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(3, 3, w - 6, h - 6);
 
-      // 4. Centered prompt label
-      ctx.fillStyle = "#331f04";
-      ctx.font = "bold 11.5px 'Cinzel', Georgia, serif";
+      ctx.strokeStyle = "rgba(168, 105, 10, 0.75)";
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(7, 7, w - 14, h - 14);
+
+      // 5. Centered Deep Gold Stamped Lettering
+      ctx.fillStyle = "#261300";
+      ctx.font = "bold 13.5px 'Cinzel', Georgia, serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText("✨ SCRATCH TO REVEAL ✨", w / 2, h / 2);
+      ctx.fillText("✨ SCRATCH TO REVEAL ✨", w / 2, h / 2 - 3);
+
+      ctx.fillStyle = "rgba(45, 25, 0, 0.78)";
+      ctx.font = "italic 11px sans-serif";
+      ctx.fillText("swipe or tap to reveal", w / 2, h / 2 + 16);
     };
 
     this.initEnvelopeScratchCanvas = initCanvas;
-    this.resetEnvelopeScratch = initCanvas;
-
-    setTimeout(initCanvas, 100);
+    this.resetEnvelopeScratch = () => {
+      isRevealed = false;
+      isInitialized = false;
+      initCanvas();
+    };
 
     const getPos = (e) => {
       const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
       return {
-        x: clientX - rect.left,
-        y: clientY - rect.top,
-        screenX: clientX,
-        screenY: clientY
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+        screenX: e.clientX,
+        screenY: e.clientY
       };
     };
 
-    const scratch = (pos) => {
+    const scratchTo = (currentX, currentY, screenX, screenY) => {
       if (isRevealed) return;
 
       ctx.globalCompositeOperation = "destination-out";
+      ctx.lineWidth = 36;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
       ctx.beginPath();
-      ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(currentX, currentY);
+      ctx.stroke();
+
+      lastX = currentX;
+      lastY = currentY;
+      strokeCount++;
 
       // Trigger soft haptic
-      if (Math.random() < 0.3) {
+      if (Math.random() < 0.35) {
         this.triggerHaptic(12);
       }
 
       // Spawn gold sparkle particles
-      this.spawnScratchSparkle(pos.screenX, pos.screenY);
+      this.spawnScratchSparkle(screenX, screenY);
+
+      // Check progress periodically while dragging
+      if (strokeCount > 10 || strokeCount % 4 === 0) {
+        checkProgress();
+      }
     };
 
     const checkProgress = () => {
@@ -1109,22 +1194,24 @@ class BirthdayApp {
           }
         }
         const percent = transparentPixels / sampled;
-        if (percent >= 0.32) {
+        if (percent >= 0.22 || strokeCount >= 18) {
           revealName();
         }
-      } catch (err) {}
+      } catch (err) {
+        if (strokeCount >= 14) revealName();
+      }
     };
 
     const revealName = () => {
       if (isRevealed) return;
-      isRevealed = true;
-      this.triggerHaptic([30, 40]);
+      isRevealed = true; // Permanently locked - will NEVER re-render!
+      this.triggerHaptic([30, 45]);
       canvas.classList.add("fade-out");
       container.classList.add("revealed");
 
-      if (hint) {
-        hint.innerHTML = `<span style="color: #6a4d0c; font-weight: 500;">✨ Revealed with warmth & care ✨</span>`;
-      }
+      setTimeout(() => {
+        canvas.style.display = "none";
+      }, 500);
 
       // Play soft chime sound
       if (window.wishesAudio && typeof window.wishesAudio.playPopSound === "function") {
@@ -1132,63 +1219,54 @@ class BirthdayApp {
       }
 
       if (this.confetti) {
-        this.confetti.launchBurst(35);
+        this.confetti.launchBurst(40);
       }
     };
 
-    // Events on canvas (prevent envelope click bubbling)
-    canvas.addEventListener("mousedown", (e) => {
+    // Modern Pointer Events: Handles mouse, touch, and stylus uniformly
+    canvas.addEventListener("pointerdown", (e) => {
+      if (isRevealed) return;
+      e.preventDefault();
       e.stopPropagation();
-      isDrawing = true;
-      scratch(getPos(e));
-    });
-
-    window.addEventListener("mousemove", (e) => {
-      if (!isDrawing) return;
-      scratch(getPos(e));
-    });
-
-    window.addEventListener("mouseup", () => {
-      if (isDrawing) {
-        isDrawing = false;
-        checkProgress();
+      if (canvas.setPointerCapture) {
+        try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
       }
+      isDrawing = true;
+      const pos = getPos(e);
+      lastX = pos.x;
+      lastY = pos.y;
+      scratchTo(pos.x, pos.y, pos.screenX, pos.screenY);
     });
 
-    canvas.addEventListener("touchstart", (e) => {
+    canvas.addEventListener("pointermove", (e) => {
+      if (!isDrawing || isRevealed) return;
+      e.preventDefault();
       e.stopPropagation();
-      isDrawing = true;
-      scratch(getPos(e));
-    }, { passive: true });
-
-    canvas.addEventListener("touchmove", (e) => {
-      if (!isDrawing) return;
-      scratch(getPos(e));
-    }, { passive: true });
-
-    canvas.addEventListener("touchend", () => {
-      if (isDrawing) {
-        isDrawing = false;
-        checkProgress();
-      }
+      const pos = getPos(e);
+      scratchTo(pos.x, pos.y, pos.screenX, pos.screenY);
     });
 
-    // Also tap hint to reveal fallback
-    if (hint) {
-      hint.style.cursor = "pointer";
-      hint.addEventListener("click", (e) => {
-        e.stopPropagation();
-        revealName();
-      });
-    }
+    const endPointer = (e) => {
+      if (!isDrawing) return;
+      isDrawing = false;
+      if (canvas.releasePointerCapture) {
+        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+      checkProgress();
+    };
 
-    // When envelope is opened, re-initialize canvas after slide animation
-    const envelope = document.getElementById("magical-envelope");
-    if (envelope) {
-      envelope.addEventListener("click", () => {
-        setTimeout(initCanvas, 350);
-      });
-    }
+    canvas.addEventListener("pointerup", endPointer);
+    canvas.addEventListener("pointercancel", endPointer);
+
+    // Direct Tap / Click fallback: Smoothly dissolves and reveals!
+    canvas.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      revealName();
+    });
+
+    // Initialize once on load
+    setTimeout(initCanvas, 150);
   }
 
   /* ----------------------------------------------------

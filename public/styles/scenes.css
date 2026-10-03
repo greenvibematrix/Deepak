@@ -747,18 +747,70 @@
   z-index: 12;
 }
 
-/* Envelope Scratch Card in Scene 14 */
+/* Envelope Scratch Card in Scene 14: Displays only the scratch card alone */
+.envelope-letter-card {
+  position: absolute;
+  top: 15px;
+  width: 90%;
+  height: 85%;
+  background: #fffdf8;
+  color: #1a1228;
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(0);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .envelope-scratch-container {
   position: relative;
-  display: inline-block;
-  width: 210px;
-  height: 44px;
-  margin: 2px auto 4px;
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  background: #fffdf8;
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 16px rgba(255, 215, 0, 0.35);
+  background: radial-gradient(circle at center, #fffdfa 0%, #faedd9 100%);
+  border: 2px solid #ffd700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Holographic Diagonal Light Sweep for Brighter Gold & Shine */
+.envelope-scratch-container::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 220%;
+  height: 220%;
+  background: linear-gradient(
+    65deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 65%
+  );
+  transform: rotate(25deg);
+  animation: goldCardSheen 3s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.envelope-scratch-container.revealed::after {
+  display: none;
+}
+
+@keyframes goldCardSheen {
+  0% { transform: translateX(-120%) rotate(25deg); }
+  35%, 100% { transform: translateX(120%) rotate(25deg); }
 }
 
 .envelope-scratch-container .letter-creator-name {
@@ -768,12 +820,14 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-serif);
-  font-size: 1.25rem;
+  font-size: 1.55rem;
   font-weight: 700;
   color: #1a1228;
+  letter-spacing: 1.5px;
   margin: 0;
   z-index: 1;
-  letter-spacing: 1px;
+  text-align: center;
+  transition: transform 0.4s ease, color 0.4s ease;
 }
 
 .envelope-scratch-canvas {
@@ -786,44 +840,24 @@
   z-index: 5;
   transition: opacity 0.5s ease;
   touch-action: none;
-  border-radius: 7px;
+  border-radius: 6px;
 }
 
 .envelope-scratch-canvas.fade-out {
   opacity: 0;
   pointer-events: none;
-}
-
-.envelope-scratch-hint {
-  font-size: 0.72rem;
-  color: #946e16;
-  font-family: var(--font-story);
-  letter-spacing: 0.5px;
-  margin: 2px 0 6px;
-  animation: envelopeHintBlink 2.4s ease-in-out infinite;
-}
-
-@keyframes envelopeHintBlink {
-  0%, 100% { opacity: 0.65; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.03); }
+  display: none;
 }
 
 .envelope-scratch-container.revealed .letter-creator-name {
-  color: #8c5b0d;
-  text-shadow: 0 0 10px rgba(245, 199, 103, 0.7);
-  animation: creatorNamePulse 1.6s ease-in-out infinite alternate;
+  color: #a36a08;
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.85);
+  animation: creatorNamePulse 1.8s ease-in-out infinite alternate;
 }
 
 @keyframes creatorNamePulse {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.05); }
-}
-
-.letter-creator-desc {
-  font-size: 0.82rem;
-  color: #554866;
-  line-height: 1.45;
-  margin-top: 2px;
+  0% { transform: scale(1); filter: drop-shadow(0 0 6px #ffd700); }
+  100% { transform: scale(1.06); filter: drop-shadow(0 0 16px #ffba42); }
 }
 
 /* ----------------------------------------------------
