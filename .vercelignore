@@ -1,5 +1,6 @@
 server.js
 scripts/
+dev-scripts/
 data/
 node_modules/
 .env

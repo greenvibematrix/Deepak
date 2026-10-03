@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test:backend": "node scripts/test-backend.js",
-    "view:wishes": "node scripts/view-wishes.js"
+    "test:backend": "node dev-scripts/test-backend.js",
+    "view:wishes": "node dev-scripts/view-wishes.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
