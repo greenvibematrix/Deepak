@@ -4,6 +4,7 @@
   "description": "Three Wishes — A Little Birthday Magic for Sayandana",
   "type": "commonjs",
   "scripts": {
+    "build": "echo Static build complete",
     "start": "node server.js",
     "dev": "node server.js",
     "test:backend": "node dev-scripts/test-backend.js",
