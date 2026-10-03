@@ -82,28 +82,32 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Start listening on 0.0.0.0 so mobile devices on Wi-Fi can connect
-app.listen(PORT, "0.0.0.0", () => {
-  const hasResend = !!(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim());
-  const hasGmail = !!((process.env.GMAIL_USER || process.env.SMTP_USER) && (process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS));
-  const hasWeb3Forms = !!(process.env.WEB3FORMS_ACCESS_KEY || process.env.WEB3FORMS_KEY);
+// Start listening on 0.0.0.0 only when running locally (not in Vercel serverless environment)
+if (!process.env.VERCEL) {
+  app.listen(PORT, "0.0.0.0", () => {
+    const hasResend = !!(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim());
+    const hasGmail = !!((process.env.GMAIL_USER || process.env.SMTP_USER) && (process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS));
+    const hasWeb3Forms = !!(process.env.WEB3FORMS_ACCESS_KEY || process.env.WEB3FORMS_KEY);
 
-  console.log("==================================================");
-  console.log("✨ SAYANDANA'S MAGICAL BIRTHDAY WEBSITE (BACKEND)");
-  console.log(`💻 Local Computer:     http://localhost:${PORT}`);
-  console.log(`📱 Mobile (Same Wi-Fi): http://10.3.239.48:${PORT}`);
-  console.log(`💌 Target Recipient:    ${process.env.OWNER_EMAIL || "greenvibematrix@gmail.com"}`);
-  
-  if (hasResend) {
-    console.log("📧 Active Mode: LIVE EMAIL via Resend API");
-  } else if (hasGmail) {
-    console.log("📧 Active Mode: LIVE EMAIL via Gmail / Nodemailer SMTP");
-  } else if (hasWeb3Forms) {
-    console.log("📧 Active Mode: LIVE EMAIL via Web3Forms API");
-  } else {
-    console.log("💡 Active Mode: VAULT MODE (Saved to data/wishes-vault.json + console)");
-    console.log("   To enable live emails to greenvibematrix@gmail.com, see .env");
-  }
-  console.log(`🛡️  Zero Tracking: Enabled (NO IP, NO fingerprints logged)`);
-  console.log("==================================================");
-});
+    console.log("==================================================");
+    console.log("✨ SAYANDANA'S MAGICAL BIRTHDAY WEBSITE (BACKEND)");
+    console.log(`💻 Local Computer:     http://localhost:${PORT}`);
+    console.log(`📱 Mobile (Same Wi-Fi): http://10.3.239.48:${PORT}`);
+    console.log(`💌 Target Recipient:    ${process.env.OWNER_EMAIL || "greenvibematrix@gmail.com"}`);
+    
+    if (hasResend) {
+      console.log("📧 Active Mode: LIVE EMAIL via Resend API");
+    } else if (hasGmail) {
+      console.log("📧 Active Mode: LIVE EMAIL via Gmail / Nodemailer SMTP");
+    } else if (hasWeb3Forms) {
+      console.log("📧 Active Mode: LIVE EMAIL via Web3Forms API");
+    } else {
+      console.log("💡 Active Mode: VAULT MODE (Saved to data/wishes-vault.json + console)");
+      console.log("   To enable live emails to greenvibematrix@gmail.com, see .env");
+    }
+    console.log(`🛡️  Zero Tracking: Enabled (NO IP, NO fingerprints logged)`);
+    console.log("==================================================");
+  });
+}
+
+module.exports = app;
