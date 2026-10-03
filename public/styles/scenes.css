@@ -701,37 +701,7 @@
   100% { transform: translateY(-6px); }
 }
 
-/* Pulsing tap hint above the envelope */
-.envelope-tap-hint {
-  position: absolute;
-  top: -38px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(36, 28, 66, 0.88);
-  border: 1px solid rgba(255, 215, 0, 0.45);
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-family: var(--font-story);
-  font-size: 0.78rem;
-  letter-spacing: 0.8px;
-  color: #ffd859;
-  white-space: nowrap;
-  pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-  transition: opacity 0.4s ease;
-  animation: tapHintPulse 2s ease-in-out infinite;
-  z-index: 15;
-}
 
-@keyframes tapHintPulse {
-  0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.04); }
-}
-
-.envelope-interactive-wrapper.opened .envelope-tap-hint {
-  opacity: 0;
-  pointer-events: none;
-}
 
 /* Envelope Box Structure */
 .envelope-box {
