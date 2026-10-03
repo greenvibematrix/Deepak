@@ -851,15 +851,78 @@
           </p>
 
           <div class="envelope-interactive-wrapper" id="magical-envelope" role="button" tabindex="0" aria-label="Open birthday envelope">
-            <div class="envelope-body">
-              <div class="envelope-wax-seal">
-                <span>🌙</span>
+            <!-- Pulsing tap hint above the envelope -->
+            <div class="envelope-tap-hint" id="envelope-tap-hint">
+              <span>✨ Tap envelope to open ✨</span>
+            </div>
+
+            <div class="envelope-box">
+              <!-- 1. Envelope Interior Back Wall -->
+              <div class="envelope-back"></div>
+
+              <!-- 2. The Letter Card nestled inside (slides up when opened) -->
+              <div class="envelope-letter-card" id="envelope-letter-card">
+                <div class="envelope-letter-card-frame">
+                  <!-- Scratch-to-reveal gold card: Displays only the scratch card alone -->
+                  <div class="envelope-scratch-container" id="envelope-scratch-container">
+                    <div class="letter-creator-name" id="envelope-creator-name">— Deepak 🤍</div>
+                    <canvas id="envelope-scratch-canvas" class="envelope-scratch-canvas" width="248" height="130" aria-label="Scratch to reveal who made this"></canvas>
+                  </div>
+                </div>
               </div>
-              <div class="envelope-letter-card">
-                <!-- Scratch-to-reveal gold card: Displays only the scratch card alone -->
-                <div class="envelope-scratch-container" id="envelope-scratch-container">
-                  <div class="letter-creator-name" id="envelope-creator-name">— Deepak 🤍</div>
-                  <canvas id="envelope-scratch-canvas" class="envelope-scratch-canvas" width="228" height="120" aria-label="Scratch to reveal who made this"></canvas>
+
+              <!-- 3. Front Folded Pocket (Side and Bottom triangular flaps) -->
+              <div class="envelope-pocket">
+                <svg class="envelope-pocket-svg" viewBox="0 0 300 180" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="pocketLeftGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#2a1d4d" />
+                      <stop offset="100%" stop-color="#18102f" />
+                    </linearGradient>
+                    <linearGradient id="pocketRightGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#261a45" />
+                      <stop offset="100%" stop-color="#150d29" />
+                    </linearGradient>
+                    <linearGradient id="pocketBottomGrad" x1="50%" y1="100%" x2="50%" y2="0%">
+                      <stop offset="0%" stop-color="#20143a" />
+                      <stop offset="100%" stop-color="#130b24" />
+                    </linearGradient>
+                    <filter id="pocketShadow" x="-10%" y="-10%" width="120%" height="120%">
+                      <feDropShadow dx="0" dy="-3" stdDeviation="3.5" flood-color="#070410" flood-opacity="0.65" />
+                    </filter>
+                  </defs>
+                  <!-- Left folded wing -->
+                  <polygon points="0,0 150,105 0,180" fill="url(#pocketLeftGrad)" stroke="rgba(212,175,55,0.35)" stroke-width="1" />
+                  <!-- Right folded wing -->
+                  <polygon points="300,0 150,105 300,180" fill="url(#pocketRightGrad)" stroke="rgba(212,175,55,0.35)" stroke-width="1" />
+                  <!-- Bottom folded flap -->
+                  <polygon points="0,180 150,90 300,180" fill="url(#pocketBottomGrad)" filter="url(#pocketShadow)" stroke="rgba(255,215,0,0.55)" stroke-width="1.2" />
+                  <!-- Bottom rim gold accent line -->
+                  <line x1="0" y1="180" x2="300" y2="180" stroke="#ffd700" stroke-width="2.5" />
+                </svg>
+              </div>
+
+              <!-- 4. Top Triangular Flap with Crescent Moon Wax Seal -->
+              <div class="envelope-top-flap" id="envelope-top-flap">
+                <svg class="envelope-flap-svg" viewBox="0 0 300 115" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="flapGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+                      <stop offset="0%" stop-color="#302257" />
+                      <stop offset="65%" stop-color="#241845" />
+                      <stop offset="100%" stop-color="#1a1132" />
+                    </linearGradient>
+                    <filter id="flapShadow" x="-10%" y="-10%" width="120%" height="130%">
+                      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000000" flood-opacity="0.6" />
+                    </filter>
+                  </defs>
+                  <polygon points="0,0 300,0 150,110" fill="url(#flapGrad)" filter="url(#flapShadow)" stroke="rgba(255,215,0,0.7)" stroke-width="1.5" />
+                  <polyline points="0,0 150,110 300,0" fill="none" stroke="rgba(255,235,160,0.85)" stroke-width="1" />
+                </svg>
+                <!-- Wax seal holding the flap shut -->
+                <div class="envelope-wax-seal" id="envelope-wax-seal" title="Tap to open envelope">
+                  <div class="seal-inner-circle">
+                    <span class="seal-moon">🌙</span>
+                  </div>
                 </div>
               </div>
             </div>

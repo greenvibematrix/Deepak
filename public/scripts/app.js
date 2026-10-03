@@ -258,12 +258,16 @@ class BirthdayApp {
           this.triggerHaptic([30, 40]);
           envelope.classList.add("opened");
 
-          // Initialize bright gold scratch canvas once after envelope opens
+          if (window.wishesAudio && typeof window.wishesAudio.playPopSound === "function") {
+            window.wishesAudio.playPopSound(2);
+          }
+
+          // Initialize bright gold scratch canvas once after envelope opens and card slides up
           setTimeout(() => {
             if (typeof this.initEnvelopeScratchCanvas === "function") {
               this.initEnvelopeScratchCanvas();
             }
-          }, 320);
+          }, 360);
 
           // Sincere, gentle reveal sequence
           setTimeout(() => {
@@ -1072,8 +1076,8 @@ class BirthdayApp {
       container.classList.remove("revealed");
 
       const rect = canvas.getBoundingClientRect();
-      const w = rect.width > 0 ? Math.round(rect.width) : 228;
-      const h = rect.height > 0 ? Math.round(rect.height) : 120;
+      const w = rect.width > 0 ? Math.round(rect.width) : 248;
+      const h = rect.height > 0 ? Math.round(rect.height) : 130;
 
       canvas.width = w;
       canvas.height = h;
