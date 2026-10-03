@@ -262,12 +262,9 @@ class BirthdayApp {
             window.wishesAudio.playPopSound(2);
           }
 
-          // Initialize bright gold scratch canvas once after envelope opens and card slides up
-          setTimeout(() => {
-            if (typeof this.initEnvelopeScratchCanvas === "function") {
-              this.initEnvelopeScratchCanvas();
-            }
-          }, 360);
+          if (this.confetti) {
+            setTimeout(() => this.confetti.launchBurst(35), 450);
+          }
 
           // Sincere, gentle reveal sequence
           setTimeout(() => {
@@ -311,9 +308,8 @@ class BirthdayApp {
       });
     }
 
-    // Setup interactive scratch-to-reveal card for Deepak's name
+    // Setup interactive scratch-to-reveal card for Deepak's name (Scene 15)
     this.setupScratchCard();
-    this.setupEnvelopeScratch();
 
     // Scene 15: Replay Button
     const btnReplay = document.getElementById("btn-replay-magic");
@@ -548,9 +544,6 @@ class BirthdayApp {
 
       case 14:
         // Scene 14: Envelope creator reveal
-        if (typeof this.initEnvelopeScratchCanvas === "function") {
-          setTimeout(() => this.initEnvelopeScratchCanvas(), 80);
-        }
         break;
 
       case 15:
@@ -1050,228 +1043,7 @@ class BirthdayApp {
     }, 550);
   }
 
-  /* ----------------------------------------------------
-   * INTERACTIVE SCRATCH-TO-REVEAL FOR ENVELOPE (SCENE 14)
-   * ---------------------------------------------------- */
-  setupEnvelopeScratch() {
-    const canvas = document.getElementById("envelope-scratch-canvas");
-    const container = document.getElementById("envelope-scratch-container");
-    if (!canvas || !container) return;
 
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    let isDrawing = false;
-    let isRevealed = false;
-    let isInitialized = false;
-    let strokeCount = 0;
-    let lastX = 0;
-    let lastY = 0;
-
-    const initCanvas = () => {
-      // NEVER redraw if already revealed or initialized!
-      if (isRevealed) return;
-      isInitialized = true;
-      strokeCount = 0;
-      canvas.classList.remove("fade-out");
-      canvas.style.display = "block";
-      container.classList.remove("revealed");
-
-      const rect = canvas.getBoundingClientRect();
-      const w = rect.width > 0 ? Math.round(rect.width) : 248;
-      const h = rect.height > 0 ? Math.round(rect.height) : 130;
-
-      canvas.width = w;
-      canvas.height = h;
-
-      // 1. Brilliant, Radiant Metallic Gold Layer (High shine & luminosity)
-      const grad = ctx.createLinearGradient(0, 0, w, h);
-      grad.addColorStop(0, "#c4890c");
-      grad.addColorStop(0.18, "#ffd700"); // Vivid pure gold
-      grad.addColorStop(0.38, "#fffbe8"); // Sparkling high-sheen specular highlight
-      grad.addColorStop(0.55, "#ffcf33");
-      grad.addColorStop(0.78, "#ffd859");
-      grad.addColorStop(0.92, "#f0ad18");
-      grad.addColorStop(1, "#b37b0b");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      // 2. Diagonal Gloss Sheen band across center for extra luster
-      const sheenGrad = ctx.createLinearGradient(0, 0, w, h * 0.7);
-      sheenGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
-      sheenGrad.addColorStop(0.45, "rgba(255, 255, 255, 0.4)");
-      sheenGrad.addColorStop(0.55, "rgba(255, 255, 255, 0.4)");
-      sheenGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
-      ctx.fillStyle = sheenGrad;
-      ctx.fillRect(0, 0, w, h);
-
-      // 3. Diamond & Star Glitter Stardust Speckles
-      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-      for (let i = 0; i < 45; i++) {
-        const x = (i * 37 + 13) % w;
-        const y = (i * 29 + 17) % h;
-        const r = (i % 3) * 0.8 + 0.9;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // 4. Double Metallic Gold Beveled Borders
-      ctx.strokeStyle = "rgba(255, 250, 200, 0.95)";
-      ctx.lineWidth = 2.5;
-      ctx.strokeRect(3, 3, w - 6, h - 6);
-
-      ctx.strokeStyle = "rgba(168, 105, 10, 0.75)";
-      ctx.lineWidth = 1.2;
-      ctx.strokeRect(7, 7, w - 14, h - 14);
-
-      // 5. Centered Deep Gold Stamped Lettering
-      ctx.fillStyle = "#261300";
-      ctx.font = "bold 13.5px 'Cinzel', Georgia, serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("✨ SCRATCH TO REVEAL ✨", w / 2, h / 2 - 3);
-
-      ctx.fillStyle = "rgba(45, 25, 0, 0.78)";
-      ctx.font = "italic 11px sans-serif";
-      ctx.fillText("swipe or tap to reveal", w / 2, h / 2 + 16);
-    };
-
-    this.initEnvelopeScratchCanvas = initCanvas;
-    this.resetEnvelopeScratch = () => {
-      isRevealed = false;
-      isInitialized = false;
-      initCanvas();
-    };
-
-    const getPos = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        screenX: e.clientX,
-        screenY: e.clientY
-      };
-    };
-
-    const scratchTo = (currentX, currentY, screenX, screenY) => {
-      if (isRevealed) return;
-
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.lineWidth = 36;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(currentX, currentY);
-      ctx.stroke();
-
-      lastX = currentX;
-      lastY = currentY;
-      strokeCount++;
-
-      // Trigger soft haptic
-      if (Math.random() < 0.35) {
-        this.triggerHaptic(12);
-      }
-
-      // Spawn gold sparkle particles
-      this.spawnScratchSparkle(screenX, screenY);
-
-      // Check progress periodically while dragging
-      if (strokeCount > 10 || strokeCount % 4 === 0) {
-        checkProgress();
-      }
-    };
-
-    const checkProgress = () => {
-      if (isRevealed) return;
-      try {
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imgData.data;
-        let transparentPixels = 0;
-        const step = 16;
-        let sampled = 0;
-        for (let i = 3; i < data.length; i += step) {
-          sampled++;
-          if (data[i] < 128) {
-            transparentPixels++;
-          }
-        }
-        const percent = transparentPixels / sampled;
-        if (percent >= 0.22 || strokeCount >= 18) {
-          revealName();
-        }
-      } catch (err) {
-        if (strokeCount >= 14) revealName();
-      }
-    };
-
-    const revealName = () => {
-      if (isRevealed) return;
-      isRevealed = true; // Permanently locked - will NEVER re-render!
-      this.triggerHaptic([30, 45]);
-      canvas.classList.add("fade-out");
-      container.classList.add("revealed");
-
-      setTimeout(() => {
-        canvas.style.display = "none";
-      }, 500);
-
-      // Play soft chime sound
-      if (window.wishesAudio && typeof window.wishesAudio.playPopSound === "function") {
-        window.wishesAudio.playPopSound(5);
-      }
-
-      if (this.confetti) {
-        this.confetti.launchBurst(40);
-      }
-    };
-
-    // Modern Pointer Events: Handles mouse, touch, and stylus uniformly
-    canvas.addEventListener("pointerdown", (e) => {
-      if (isRevealed) return;
-      e.preventDefault();
-      e.stopPropagation();
-      if (canvas.setPointerCapture) {
-        try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
-      }
-      isDrawing = true;
-      const pos = getPos(e);
-      lastX = pos.x;
-      lastY = pos.y;
-      scratchTo(pos.x, pos.y, pos.screenX, pos.screenY);
-    });
-
-    canvas.addEventListener("pointermove", (e) => {
-      if (!isDrawing || isRevealed) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const pos = getPos(e);
-      scratchTo(pos.x, pos.y, pos.screenX, pos.screenY);
-    });
-
-    const endPointer = (e) => {
-      if (!isDrawing) return;
-      isDrawing = false;
-      if (canvas.releasePointerCapture) {
-        try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
-      }
-      checkProgress();
-    };
-
-    canvas.addEventListener("pointerup", endPointer);
-    canvas.addEventListener("pointercancel", endPointer);
-
-    // Direct Tap / Click fallback: Smoothly dissolves and reveals!
-    canvas.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      revealName();
-    });
-
-    // Initialize once on load
-    setTimeout(initCanvas, 150);
-  }
 
   /* ----------------------------------------------------
    * REPLAY STORY
@@ -1297,9 +1069,6 @@ class BirthdayApp {
     // Reset envelope & Scene 14 elements
     const envelope = document.getElementById("magical-envelope");
     if (envelope) envelope.classList.remove("opened");
-    if (typeof this.resetEnvelopeScratch === "function") {
-      this.resetEnvelopeScratch();
-    }
     const btnToFinal = document.getElementById("btn-to-final-screen");
     if (btnToFinal) {
       btnToFinal.style.display = "none";
