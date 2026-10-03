@@ -1,0 +1,6 @@
+server.js
+scripts/
+data/
+node_modules/
+.env
+.env.example
