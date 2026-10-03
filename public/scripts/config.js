@@ -23,7 +23,7 @@ const CONFIG = {
 
   // Web3Forms Direct Delivery Key (Works 100% on static hosting / Vercel Drop without any backend server)
   // Free key from https://web3forms.com sent to greenvibematrix@gmail.com
-  WEB3FORMS_ACCESS_KEY: "",
+  WEB3FORMS_ACCESS_KEY: "d45a3d63-1bdb-48c4-a383-f0acca46fdd6",
 
   // Storage keys for draft recovery (cleared after submission)
   STORAGE_KEYS: {
